@@ -204,6 +204,11 @@
                     <i class="fa-solid fa-palette text-xs"></i>
                 </button>
 
+                <!-- Currency Toggle -->
+                <button onclick="toggleFx()" class="w-9 h-9 rounded-2xl bg-white/80 hover:bg-white flex items-center justify-center text-pink-500 shadow-sm transition active:scale-90" title="匯率換算">
+                    <i class="fa-solid fa-coins text-xs"></i>
+                </button>
+
                 <!-- History Toggle Button -->
                 <button onclick="toggleHistory()" class="w-9 h-9 rounded-2xl bg-white/80 hover:bg-white flex items-center justify-center text-pink-500 shadow-sm transition active:scale-90 relative" title="History">
                     <i class="fa-solid fa-clock-rotate-left text-xs"></i>
@@ -230,6 +235,25 @@
                 <div id="main-display" class="font-fredoka font-bold text-3xl sm:text-4xl text-[var(--screen-text)] text-right overflow-x-auto custom-scrollbar whitespace-nowrap tracking-tight py-1">
                     0
                 </div>
+            </div>
+        </div>
+
+        <!-- Currency Panel -->
+        <div id="fx-panel" class="hidden bg-[var(--screen-bg)] rounded-[24px] p-3 mb-4 shadow-inner-soft border-2 border-white/80">
+            <div class="flex items-center gap-2">
+                <select id="fx-from" onchange="onFxChange()" class="flex-1 min-w-0 rounded-xl bg-white text-slate-700 font-fredoka font-semibold text-sm px-2 py-2 border border-pink-100 outline-none"></select>
+                <button onclick="swapCurrencies()" class="w-9 h-9 shrink-0 rounded-xl bg-pink-100 text-pink-500 flex items-center justify-center active:scale-90 transition" title="對調">
+                    <i class="fa-solid fa-right-left text-xs"></i>
+                </button>
+                <select id="fx-to" onchange="onFxChange()" class="flex-1 min-w-0 rounded-xl bg-white text-slate-700 font-fredoka font-semibold text-sm px-2 py-2 border border-pink-100 outline-none"></select>
+            </div>
+            <div class="flex items-center justify-between mt-2 gap-2">
+                <div id="fx-result" class="font-fredoka font-bold text-xl text-[var(--screen-text)] truncate">—</div>
+                <button onclick="applyFxResult()" class="shrink-0 px-3 py-1.5 rounded-xl bg-pink-100 hover:bg-pink-200 text-pink-600 font-fredoka font-bold text-xs active:scale-90 transition">套用</button>
+            </div>
+            <div class="flex items-center justify-between mt-1.5 gap-2 text-[11px] text-[var(--screen-subtext)] font-semibold">
+                <span id="fx-rate-line" class="truncate">載入中…</span>
+                <button onclick="refreshRates(true)" class="shrink-0 p-1 active:scale-90 transition" title="更新匯率"><i class="fa-solid fa-rotate"></i></button>
             </div>
         </div>
 
@@ -428,6 +452,9 @@
             
             // Subtle facial expression feedback based on expression
             updateKawaiiFace();
+
+            // Live currency conversion
+            updateConversion();
         }
 
         function formatNumber(numStr) {
@@ -656,8 +683,135 @@
             }, 2000);
         }
 
+        // ===== Currency Exchange =====
+        const FX_CURRENCIES = {
+            TWD: '🇹🇼 TWD 新台幣', USD: '🇺🇸 USD 美元', JPY: '🇯🇵 JPY 日圓', EUR: '🇪🇺 EUR 歐元',
+            KRW: '🇰🇷 KRW 韓元', CNY: '🇨🇳 CNY 人民幣', HKD: '🇭🇰 HKD 港幣', GBP: '🇬🇧 GBP 英鎊',
+            AUD: '🇦🇺 AUD 澳幣', CAD: '🇨🇦 CAD 加幣', SGD: '🇸🇬 SGD 新幣', THB: '🇹🇭 THB 泰銖',
+            VND: '🇻🇳 VND 越南盾', MYR: '🇲🇾 MYR 馬幣', PHP: '🇵🇭 PHP 披索'
+        };
+        const FX_CACHE_KEY = 'mochicalc_fx_cache';
+        const FX_TTL_MS = 6 * 60 * 60 * 1000;
+        let fxRates = null;      // 以 USD 為基準
+        let fxApiTime = null;    // 資料來源更新時間 (unix 秒)
+        let fxStatus = '';
+        let fxLastResult = null;
+
+        function fxSafeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+        function fxSafeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+        function initFx() {
+            const from = document.getElementById('fx-from');
+            const to = document.getElementById('fx-to');
+            const opts = Object.entries(FX_CURRENCIES).map(([c, n]) => `<option value="${c}">${n}</option>`).join('');
+            from.innerHTML = opts;
+            to.innerHTML = opts;
+            from.value = fxSafeGet('mochicalc_fx_from') || 'USD';
+            to.value = fxSafeGet('mochicalc_fx_to') || 'TWD';
+            if (!FX_CURRENCIES[from.value]) from.value = 'USD';
+            if (!FX_CURRENCIES[to.value]) to.value = 'TWD';
+        }
+
+        async function refreshRates(force = false) {
+            let cached = null;
+            try { cached = JSON.parse(fxSafeGet(FX_CACHE_KEY) || 'null'); } catch (e) {}
+
+            if (!force && cached && Date.now() - cached.fetchedAt < FX_TTL_MS) {
+                fxRates = cached.rates; fxApiTime = cached.apiTime; fxStatus = '';
+                updateConversion();
+                return;
+            }
+            fxStatus = '更新中…';
+            updateConversion();
+            try {
+                const res = await fetch('https://open.er-api.com/v6/latest/USD');
+                const data = await res.json();
+                if (data.result !== 'success') throw new Error('API error');
+                fxRates = data.rates;
+                fxApiTime = data.time_last_update_unix;
+                fxStatus = '';
+                fxSafeSet(FX_CACHE_KEY, JSON.stringify({ rates: fxRates, apiTime: fxApiTime, fetchedAt: Date.now() }));
+                if (force) showToast('匯率已更新 ✨');
+            } catch (e) {
+                if (cached) {
+                    fxRates = cached.rates; fxApiTime = cached.apiTime;
+                    fxStatus = '離線，使用快取';
+                } else {
+                    fxRates = null;
+                    fxStatus = '無法取得匯率';
+                }
+            }
+            updateConversion();
+        }
+
+        function fxFormat(n) {
+            const abs = Math.abs(n);
+            const digits = abs >= 100 ? 2 : abs >= 1 ? 3 : 4;
+            return n.toLocaleString('en-US', { maximumFractionDigits: digits });
+        }
+
+        function updateConversion() {
+            const panel = document.getElementById('fx-panel');
+            if (!panel || panel.classList.contains('hidden')) return;
+
+            const from = document.getElementById('fx-from').value;
+            const to = document.getElementById('fx-to').value;
+            const resultEl = document.getElementById('fx-result');
+            const lineEl = document.getElementById('fx-rate-line');
+            const amount = parseFloat(currentInput);
+
+            if (!fxRates || !fxRates[from] || !fxRates[to]) {
+                fxLastResult = null;
+                resultEl.innerText = '—';
+                lineEl.innerText = fxStatus || '無匯率資料';
+                return;
+            }
+
+            const rate = fxRates[to] / fxRates[from];
+            fxLastResult = isNaN(amount) ? null : amount * rate;
+            resultEl.innerText = fxLastResult === null ? '—' : `${fxFormat(fxLastResult)} ${to}`;
+
+            const date = fxApiTime ? new Date(fxApiTime * 1000).toLocaleDateString() : '';
+            lineEl.innerText = `1 ${from} = ${fxFormat(rate)} ${to}` + (date ? ` · ${date}` : '') + (fxStatus ? ` · ${fxStatus}` : '');
+        }
+
+        function toggleFx() {
+            playCuteSound('pop');
+            const panel = document.getElementById('fx-panel');
+            panel.classList.toggle('hidden');
+            if (!panel.classList.contains('hidden')) {
+                if (!fxRates) refreshRates(); else updateConversion();
+            }
+        }
+
+        function onFxChange() {
+            fxSafeSet('mochicalc_fx_from', document.getElementById('fx-from').value);
+            fxSafeSet('mochicalc_fx_to', document.getElementById('fx-to').value);
+            playCuteSound('pop');
+            updateConversion();
+        }
+
+        function swapCurrencies() {
+            playCuteSound('pop');
+            const from = document.getElementById('fx-from');
+            const to = document.getElementById('fx-to');
+            [from.value, to.value] = [to.value, from.value];
+            onFxChange();
+        }
+
+        function applyFxResult() {
+            if (fxLastResult === null) return;
+            playCuteSound('equals');
+            currentInput = (Math.round(fxLastResult * 100) / 100).toString();
+            pendingOperator = null;
+            previousInput = '';
+            shouldResetScreen = true;
+            updateDisplay();
+        }
+
         // Keyboard Accessibility Listener
         document.addEventListener('keydown', (e) => {
+            if (e.target && e.target.tagName === 'SELECT') return;
             if (e.key >= '0' && e.key <= '9') handleNumber(e.key);
             else if (e.key === '.') handleDecimal();
             else if (e.key === '+') handleOperator('+');
@@ -672,6 +826,7 @@
 
         // Initialize display
         window.onload = function() {
+            initFx();
             updateDisplay();
         };
     </script>
