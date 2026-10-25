@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kawaii Calculator - 可愛版計算機</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Fredoka & Quicksand for cute typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        quicksand: ['Quicksand', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'bubbly': '0 8px 0 0 rgba(0, 0, 0, 0.08), 0 15px 20px -5px rgba(0, 0, 0, 0.1)',
+                        'bubbly-pressed': '0 2px 0 0 rgba(0, 0, 0, 0.08), 0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+                        'card': '0 20px 40px -15px rgba(255, 182, 193, 0.4)',
+                        'mint-card': '0 20px 40px -15px rgba(168, 230, 207, 0.4)',
+                        'inner-soft': 'inset 0 3px 6px rgba(0,0,0,0.06)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            touch-action: manipulation;
+        }
+
+        /* Custom Kawaii Themes */
+        .theme-strawberry {
+            --bg-gradient: linear-gradient(135deg, #ffd1dc 0%, #ffe3e8 100%);
+            --card-bg: #fff0f3;
+            --screen-bg: #fffbfd;
+            --screen-text: #ff5c8d;
+            --screen-subtext: #ff9ebb;
+            --btn-num-bg: #ffffff;
+            --btn-num-text: #6c5ce7;
+            --btn-num-shadow: #e0d0f5;
+            --btn-op-bg: #ffd1dc;
+            --btn-op-text: #d63031;
+            --btn-op-shadow: #f8a5c2;
+            --btn-eq-bg: #ff7675;
+            --btn-eq-text: #ffffff;
+            --btn-eq-shadow: #e17055;
+            --accent-color: #ff7675;
+            --border-color: #fbc4ab;
+        }
+
+        .theme-mint {
+            --bg-gradient: linear-gradient(135deg, #c7ecee 0%, #e8f8f5 100%);
+            --card-bg: #e3f6f5;
+            --screen-bg: #f7fcfb;
+            --screen-text: #10ac84;
+            --screen-subtext: #7bed9f;
+            --btn-num-bg: #ffffff;
+            --btn-num-text: #2e86de;
+            --btn-num-shadow: #c8d6e5;
+            --btn-op-bg: #b2bec3;
+            --btn-op-bg-mint: #c7ecee;
+            --btn-op-text: #0097e6;
+            --btn-op-shadow: #81ecec;
+            --btn-eq-bg: #1dd1a1;
+            --btn-eq-text: #ffffff;
+            --btn-eq-shadow: #10ac84;
+            --accent-color: #1dd1a1;
+            --border-color: #a8e6cf;
+        }
+
+        .theme-lavender {
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --card-bg: #f3e8ff;
+            --screen-bg: #faf5ff;
+            --screen-text: #7c3aed;
+            --screen-subtext: #a78bfa;
+            --btn-num-bg: #ffffff;
+            --btn-num-text: #4c1d95;
+            --btn-num-shadow: #ddd6fe;
+            --btn-op-bg: #ddd6fe;
+            --btn-op-text: #6d28d9;
+            --btn-op-shadow: #c4b5fd;
+            --btn-eq-bg: #a78bfa;
+            --btn-eq-text: #ffffff;
+            --btn-eq-shadow: #7c3aed;
+            --accent-color: #a78bfa;
+            --border-color: #ddd6fe;
+        }
+
+        /* Cute Bubbly Button Effects */
+        .btn-calc {
+            transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            top: 0;
+        }
+
+        .btn-calc:active, .btn-calc.pressed {
+            top: 4px;
+            box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0,0,0,0.1) !important;
+        }
+
+        /* Floating Kawaii Animations */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 90%, 100% { transform: scaleY(1); }
+            95% { transform: scaleY(0.1); }
+        }
+
+        .eye-blink {
+            animation: blink 4s infinite;
+        }
+
+        /* Custom Scrollbar for History Panel */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+        }
+
+        /* Ripple / Pop effect */
+        .pop-effect {
+            animation: pop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="theme-strawberry bg-gradient-to-br min-h-screen flex items-center justify-center p-3 sm:p-4 overflow-x-hidden">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md px-5 py-2.5 rounded-full shadow-lg border border-pink-200 text-pink-600 font-bold text-sm flex items-center gap-2 transform -translate-y-20 opacity-0 transition-all duration-300 z-50">
+        <i class="fa-solid fa-heart text-pink-500"></i>
+        <span id="toast-msg">Copied to clipboard!</span>
+    </div>
+
+    <!-- Main Container (Mobile First Tailored 375px - 420px) -->
+    <div class="w-full max-w-[400px] bg-[var(--card-bg)] rounded-[38px] p-5 shadow-card transition-all duration-300 relative border-4 border-white/60 backdrop-blur-sm">
+
+        <!-- Top Header & Controls -->
+        <div class="flex items-center justify-between mb-3 px-1">
+            <!-- Kawaii Brand & Mood Face -->
+            <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-2xl bg-white flex items-center justify-center shadow-sm text-pink-500 text-lg animate-float">
+                    <!-- Dynamic Face SVG -->
+                    <svg id="kawaii-face" class="w-6 h-6" viewBox="0 0 100 100">
+                        <!-- Eyes -->
+                        <circle class="eye-blink fill-current" cx="30" cy="45" r="7"/>
+                        <circle class="eye-blink fill-current" cx="70" cy="45" r="7"/>
+                        <!-- Cheeks -->
+                        <circle fill="#ff9ebb" opacity="0.6" cx="20" cy="55" r="8"/>
+                        <circle fill="#ff9ebb" opacity="0.6" cx="80" cy="55" r="8"/>
+                        <!-- Smile Mouth -->
+                        <path id="mouth" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" d="M 40 62 Q 50 72 60 62" />
+                    </svg>
+                </div>
+                <span class="font-fredoka font-semibold text-pink-600 tracking-wide text-base">MochiCalc</span>
+            </div>
+
+            <!-- Action Utility Icons -->
+            <div class="flex items-center gap-2">
+                <!-- Sound Toggle -->
+                <button id="btn-sound" onclick="toggleSound()" class="w-9 h-9 rounded-2xl bg-white/80 hover:bg-white flex items-center justify-center text-pink-500 shadow-sm transition active:scale-90" title="Sound Effects">
+                    <i id="sound-icon" class="fa-solid fa-volume-high text-xs"></i>
+                </button>
+
+                <!-- Theme Toggle Button -->
+                <button onclick="cycleTheme()" class="w-9 h-9 rounded-2xl bg-white/80 hover:bg-white flex items-center justify-center text-pink-500 shadow-sm transition active:scale-90" title="Change Theme">
+                    <i class="fa-solid fa-palette text-xs"></i>
+                </button>
+
+                <!-- History Toggle Button -->
+                <button onclick="toggleHistory()" class="w-9 h-9 rounded-2xl bg-white/80 hover:bg-white flex items-center justify-center text-pink-500 shadow-sm transition active:scale-90 relative" title="History">
+                    <i class="fa-solid fa-clock-rotate-left text-xs"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Display Screen -->
+        <div class="bg-[var(--screen-bg)] rounded-[28px] p-4 mb-4 shadow-inner-soft border-2 border-white/80 relative overflow-hidden group">
+            
+            <!-- Calculation History Preview (Top Line) -->
+            <div id="history-display" class="h-6 text-right font-quicksand font-semibold text-sm text-[var(--screen-subtext)] overflow-hidden text-ellipsis whitespace-nowrap px-1">
+                <!-- Calculated expression preview -->
+            </div>
+
+            <!-- Main Result Output Line -->
+            <div class="flex items-center justify-between gap-1 mt-1">
+                <!-- Copy Button -->
+                <button onclick="copyToClipboard()" class="opacity-40 hover:opacity-100 text-pink-400 p-1.5 rounded-lg transition active:scale-90" title="Copy Result">
+                    <i class="fa-regular fa-copy text-sm"></i>
+                </button>
+
+                <!-- Output Text -->
+                <div id="main-display" class="font-fredoka font-bold text-3xl sm:text-4xl text-[var(--screen-text)] text-right overflow-x-auto custom-scrollbar whitespace-nowrap tracking-tight py-1">
+                    0
+                </div>
+            </div>
+        </div>
+
+        <!-- Keypad Grid Layout -->
+        <div class="grid grid-cols-4 gap-2.5 sm:gap-3">
+            <!-- Row 1 -->
+            <button onclick="handleClear()" class="btn-calc h-14 rounded-2xl bg-pink-100 hover:bg-pink-200 text-pink-600 font-fredoka font-bold text-lg shadow-[0_6px_0_0_#f8a5c2] active:shadow-none flex items-center justify-center">
+                <span id="btn-c-text">AC</span>
+            </button>
+            <button onclick="handleBackspace()" class="btn-calc h-14 rounded-2xl bg-pink-100 hover:bg-pink-200 text-pink-600 font-fredoka font-bold text-lg shadow-[0_6px_0_0_#f8a5c2] active:shadow-none flex items-center justify-center">
+                <i class="fa-solid fa-delete-left"></i>
+            </button>
+            <button onclick="handlePercent()" class="btn-calc h-14 rounded-2xl bg-pink-100 hover:bg-pink-200 text-pink-600 font-fredoka font-bold text-lg shadow-[0_6px_0_0_#f8a5c2] active:shadow-none flex items-center justify-center">
+                %
+            </button>
+            <button onclick="handleOperator('÷')" class="btn-calc h-14 rounded-2xl bg-orange-100 hover:bg-orange-200 text-orange-500 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#fbc531] active:shadow-none flex items-center justify-center">
+                ÷
+            </button>
+
+            <!-- Row 2 -->
+            <button onclick="handleNumber('7')" class="btn-calc h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">7</button>
+            <button onclick="handleNumber('8')" class="btn-calc h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">8</button>
+            <button onclick="handleNumber('9')" class="btn-calc h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">9</button>
+            <button onclick="handleOperator('×')" class="btn-calc h-14 rounded-2xl bg-orange-100 hover:bg-orange-200 text-orange-500 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#fbc531] active:shadow-none flex items-center justify-center">
+                ×
+            </button>
+
+            <!-- Row 3 -->
+            <button onclick="handleNumber('4')" class="btn-calc h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">4</button>
+            <button onclick="handleNumber('5')" class="btn-calc h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">5</button>
+            <button onclick="handleNumber('6')" class="btn-calc h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">6</button>
+            <button onclick="handleOperator('-')" class="btn-calc h-14 rounded-2xl bg-orange-100 hover:bg-orange-200 text-orange-500 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#fbc531] active:shadow-none flex items-center justify-center">
+                -
+            </button>
+
+            <!-- Row 4 -->
+            <button onclick="handleNumber('1')" class="btn-calc h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">1</button>
+            <button onclick="handleNumber('2')" class="btn-calc h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">2</button>
+            <button onclick="handleNumber('3')" class="btn-calc h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">3</button>
+            <button onclick="handleOperator('+')" class="btn-calc h-14 rounded-2xl bg-orange-100 hover:bg-orange-200 text-orange-500 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#fbc531] active:shadow-none flex items-center justify-center">
+                +
+            </button>
+
+            <!-- Row 5 -->
+            <button onclick="handleToggleSign()" class="btn-calc h-14 rounded-2xl bg-purple-100 hover:bg-purple-200 text-purple-600 font-fredoka font-bold text-lg shadow-[0_6px_0_0_#d8b4fe] active:shadow-none flex items-center justify-center">
+                ⁺/₋
+            </button>
+            <button onclick="handleNumber('0')" class="btn-calc h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">0</button>
+            <button onclick="handleDecimal()" class="btn-calc h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">•</button>
+            <button onclick="handleEquals()" class="btn-calc h-14 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white font-fredoka font-bold text-2xl shadow-[0_6px_0_0_#db2777] active:shadow-none flex items-center justify-center">
+                =
+            </button>
+        </div>
+
+        <!-- History Drawer Slide-over -->
+        <div id="history-drawer" class="absolute inset-0 bg-white/95 rounded-[34px] p-5 shadow-2xl transition-all duration-300 transform translate-y-full opacity-0 pointer-events-none flex flex-col z-40 backdrop-blur-md">
+            <div class="flex items-center justify-between pb-3 border-b border-pink-100">
+                <div class="flex items-center gap-2 text-pink-500 font-fredoka font-bold text-lg">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>Calculation History</span>
+                </div>
+                <button onclick="toggleHistory()" class="w-8 h-8 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center hover:bg-pink-200 transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- History Logs List -->
+            <div id="history-list" class="flex-1 overflow-y-auto my-3 space-y-2.5 custom-scrollbar pr-1">
+                <!-- Log entries dynamically rendered here -->
+                <div class="text-center text-slate-400 py-10 font-medium text-sm">
+                    No history yet ~ (ฅ^•ﻌ•^ฅ)
+                </div>
+            </div>
+
+            <!-- Clear History Action -->
+            <button onclick="clearHistory()" class="w-full py-2.5 rounded-xl bg-pink-100 hover:bg-pink-200 text-pink-600 font-fredoka font-bold text-sm transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-trash-can"></i>
+                Clear All History
+            </button>
+        </div>
+
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // State Management variables
+        let currentInput = '0';
+        let previousInput = '';
+        let pendingOperator = null;
+        let shouldResetScreen = false;
+        let soundEnabled = true;
+        let historyLogs = [];
+        let currentThemeIndex = 0;
+
+        const themes = ['strawberry', 'mint', 'lavender'];
+
+        // Web Audio API for cute pop sound effects
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function playCuteSound(type = 'pop') {
+            if (!soundEnabled) return;
+            try {
+                if (!audioCtx) {
+                    audioCtx = new AudioContext();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'pop') {
+                    // Soft bubble pop
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'equals') {
+                    // Cute triumph double chime
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                    osc.start(now);
+                    osc.stop(now + 0.2);
+                } else if (type === 'clear') {
+                    // Descending drop
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, now);
+                    osc.frequency.exponentialRampToValueAtTime(200, now + 0.1);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                    osc.start(now);
+                    osc.stop(now + 0.1);
+                }
+            } catch (e) {
+                console.error("Audio playback error:", e);
+            }
+        }
+
+        // Toggle Audio
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('sound-icon');
+            if (soundEnabled) {
+                icon.className = 'fa-solid fa-volume-high text-xs';
+                showToast("Sound On ♪");
+                playCuteSound('pop');
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark text-xs';
+                showToast("Sound Off 🔇");
+            }
+        }
+
+        // Cycle Color Themes
+        function cycleTheme() {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            const newTheme = themes[currentThemeIndex];
+            document.body.className = `theme-${newTheme} bg-gradient-to-br min-h-screen flex items-center justify-center p-3 sm:p-4 overflow-x-hidden`;
+            
+            let themeName = "Strawberry Milk 🍓";
+            if (newTheme === 'mint') themeName = "Mint Ice Cream 🍦";
+            if (newTheme === 'lavender') themeName = "Lavender Berry 🫐";
+            
+            showToast(themeName);
+            playCuteSound('pop');
+        }
+
+        // Screen Updates
+        function updateDisplay() {
+            const mainDisp = document.getElementById('main-display');
+            const historyDisp = document.getElementById('history-display');
+            const clearBtnText = document.getElementById('btn-c-text');
+
+            // Format displayed text with commas for readability
+            mainDisp.innerText = formatNumber(currentInput);
+
+            if (pendingOperator && previousInput !== '') {
+                historyDisp.innerText = `${formatNumber(previousInput)} ${pendingOperator}`;
+            } else {
+                historyDisp.innerText = '';
+            }
+
+            clearBtnText.innerText = (currentInput !== '0' || previousInput !== '') ? 'C' : 'AC';
+            
+            // Subtle facial expression feedback based on expression
+            updateKawaiiFace();
+        }
+
+        function formatNumber(numStr) {
+            if (numStr === 'Error' || numStr === 'NaN') return 'Error';
+            if (numStr.includes('e')) return numStr;
+            
+            const parts = numStr.split('.');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            return parts.join('.');
+        }
+
+        // Face Expressions change based on output length or status
+        function updateKawaiiFace() {
+            const mouth = document.getElementById('mouth');
+            if (!mouth) return;
+
+            if (currentInput === 'Error') {
+                mouth.setAttribute('d', 'M 40 68 Q 50 58 60 68'); // Sad mouth
+            } else if (currentInput.length > 8) {
+                mouth.setAttribute('d', 'M 40 65 Q 50 60 60 65'); // Surprised small mouth
+            } else {
+                mouth.setAttribute('d', 'M 40 62 Q 50 72 60 62'); // Happy smile
+            }
+        }
+
+        // Calculator Logic Handlers
+        function handleNumber(digit) {
+            playCuteSound('pop');
+            if (currentInput === '0' || shouldResetScreen) {
+                currentInput = digit;
+                shouldResetScreen = false;
+            } else {
+                if (currentInput.replace(/[^0-9]/g, '').length >= 12) return; // limit digits
+                currentInput += digit;
+            }
+            updateDisplay();
+        }
+
+        function handleDecimal() {
+            playCuteSound('pop');
+            if (shouldResetScreen) {
+                currentInput = '0.';
+                shouldResetScreen = false;
+            } else if (!currentInput.includes('.')) {
+                currentInput += '.';
+            }
+            updateDisplay();
+        }
+
+        function handleOperator(op) {
+            playCuteSound('pop');
+            if (pendingOperator && !shouldResetScreen) {
+                calculateResult();
+            }
+            previousInput = currentInput;
+            pendingOperator = op;
+            shouldResetScreen = true;
+            updateDisplay();
+        }
+
+        function handleEquals() {
+            if (!pendingOperator || previousInput === '') return;
+            playCuteSound('equals');
+
+            const prev = parseFloat(previousInput);
+            const current = parseFloat(currentInput);
+            let expression = `${previousInput} ${pendingOperator} ${currentInput}`;
+            let result = 0;
+
+            switch (pendingOperator) {
+                case '+': result = prev + current; break;
+                case '-': result = prev - current; break;
+                case '×': result = prev * current; break;
+                case '÷': 
+                    if (current === 0) {
+                        result = 'Error';
+                    } else {
+                        result = prev / current;
+                    }
+                    break;
+            }
+
+            if (result !== 'Error') {
+                // Precision cleanup
+                result = Math.round(result * 1e10) / 1e10;
+                result = result.toString();
+            }
+
+            // Save to history drawer
+            addHistoryEntry(expression, result);
+
+            currentInput = result;
+            pendingOperator = null;
+            previousInput = '';
+            shouldResetScreen = true;
+
+            // Trigger Pop animation on main result
+            const mainDisp = document.getElementById('main-display');
+            mainDisp.classList.remove('pop-effect');
+            void mainDisp.offsetWidth; // trigger reflow
+            mainDisp.classList.add('pop-effect');
+
+            updateDisplay();
+        }
+
+        function handleClear() {
+            playCuteSound('clear');
+            currentInput = '0';
+            previousInput = '';
+            pendingOperator = null;
+            shouldResetScreen = false;
+            updateDisplay();
+        }
+
+        function handleBackspace() {
+            playCuteSound('pop');
+            if (shouldResetScreen) return;
+            
+            if (currentInput.length > 1) {
+                currentInput = currentInput.slice(0, -1);
+            } else {
+                currentInput = '0';
+            }
+            updateDisplay();
+        }
+
+        function handlePercent() {
+            playCuteSound('pop');
+            const val = parseFloat(currentInput);
+            if (!isNaN(val)) {
+                currentInput = (val / 100).toString();
+                updateDisplay();
+            }
+        }
+
+        function handleToggleSign() {
+            playCuteSound('pop');
+            const val = parseFloat(currentInput);
+            if (!isNaN(val) && val !== 0) {
+                currentInput = (val * -1).toString();
+                updateDisplay();
+            }
+        }
+
+        // History Management
+        function addHistoryEntry(expression, result) {
+            historyLogs.unshift({ expression, result });
+            if (historyLogs.length > 20) historyLogs.pop();
+            renderHistoryList();
+        }
+
+        function renderHistoryList() {
+            const listContainer = document.getElementById('history-list');
+            if (historyLogs.length === 0) {
+                listContainer.innerHTML = `<div class="text-center text-slate-400 py-10 font-medium text-sm">No history yet ~ (ฅ^•ﻌ•^ฅ)</div>`;
+                return;
+            }
+
+            listContainer.innerHTML = historyLogs.map((item, index) => `
+                <div onclick="useHistoryResult('${item.result}')" class="p-3 bg-pink-50/60 hover:bg-pink-100/80 rounded-2xl cursor-pointer transition flex items-center justify-between group border border-pink-100/50">
+                    <div class="text-left overflow-hidden">
+                        <div class="text-xs text-slate-400 font-quicksand font-semibold truncate">${item.expression} =</div>
+                        <div class="text-base font-fredoka font-bold text-pink-600 truncate">${formatNumber(item.result)}</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-xs text-pink-300 group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            `).join('');
+        }
+
+        function useHistoryResult(val) {
+            if (val === 'Error') return;
+            currentInput = val;
+            shouldResetScreen = true;
+            updateDisplay();
+            toggleHistory();
+            playCuteSound('pop');
+        }
+
+        function clearHistory() {
+            playCuteSound('clear');
+            historyLogs = [];
+            renderHistoryList();
+            showToast("History Cleared!");
+        }
+
+        function toggleHistory() {
+            playCuteSound('pop');
+            const drawer = document.getElementById('history-drawer');
+            const isOpen = !drawer.classList.contains('translate-y-full');
+            
+            if (isOpen) {
+                drawer.classList.add('translate-y-full', 'opacity-0', 'pointer-events-none');
+            } else {
+                drawer.classList.remove('translate-y-full', 'opacity-0', 'pointer-events-none');
+            }
+        }
+
+        // Clipboard Copy
+        function copyToClipboard() {
+            if (currentInput === 'Error') return;
+            
+            // Create fallback copy method for iframe compatibility
+            const el = document.createElement('textarea');
+            el.value = currentInput;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            showToast("Copied to clipboard! ✨");
+            playCuteSound('equals');
+        }
+
+        // Toast Helper
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            toastMsg.innerText = msg;
+            
+            toast.classList.remove('-translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('-translate-y-20', 'opacity-0');
+            }, 2000);
+        }
+
+        // Keyboard Accessibility Listener
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '0' && e.key <= '9') handleNumber(e.key);
+            else if (e.key === '.') handleDecimal();
+            else if (e.key === '+') handleOperator('+');
+            else if (e.key === '-') handleOperator('-');
+            else if (e.key === '*') handleOperator('×');
+            else if (e.key === '/') { e.preventDefault(); handleOperator('÷'); }
+            else if (e.key === 'Enter' || e.key === '=') { e.preventDefault(); handleEquals(); }
+            else if (e.key === 'Backspace') handleBackspace();
+            else if (e.key === 'Escape') handleClear();
+            else if (e.key === '%') handlePercent();
+        });
+
+        // Initialize display
+        window.onload = function() {
+            updateDisplay();
+        };
+    </script>
+</body>
+</html>
