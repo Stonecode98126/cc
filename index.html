@@ -11,7 +11,7 @@
     <!-- Google Fonts: Fredoka & Quicksand for cute typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@500;600;700&family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
@@ -45,64 +45,113 @@
             touch-action: manipulation;
         }
 
-        /* Custom Kawaii Themes */
-        .theme-strawberry {
-            --bg-gradient: linear-gradient(135deg, #ffd1dc 0%, #ffe3e8 100%);
-            --card-bg: #fff0f3;
-            --screen-bg: #fffbfd;
-            --screen-text: #ff5c8d;
-            --screen-subtext: #ff9ebb;
-            --btn-num-bg: #ffffff;
-            --btn-num-text: #6c5ce7;
-            --btn-num-shadow: #e0d0f5;
-            --btn-op-bg: #ffd1dc;
-            --btn-op-text: #d63031;
-            --btn-op-shadow: #f8a5c2;
-            --btn-eq-bg: #ff7675;
-            --btn-eq-text: #ffffff;
-            --btn-eq-shadow: #e17055;
-            --accent-color: #ff7675;
-            --border-color: #fbc4ab;
+        /* ===== Themes: kawaii / industrial / contrast ===== */
+        .theme-kawaii {
+            --page-bg: linear-gradient(135deg, #ffd1dc 0%, #ffe3e8 100%);
+            --card-bg: #fff0f3; --screen-bg: #fffbfd; --screen-text: #ff5c8d; --screen-subtext: #ff9ebb;
+            --shell-border: rgba(255,255,255,.6); --shell-shadow: 0 20px 40px -15px rgba(255,182,193,.4); --shell-pattern: none;
+            --screen-border: rgba(255,255,255,.8); --screen-pattern: none; --screen-glow: none;
+            --inner-shadow: inset 0 3px 6px rgba(0,0,0,.06);
+            --r-shell: 38px; --r-screen: 28px; --r-md: 16px; --r-sm: 12px;
+            --font-display: 'Fredoka', sans-serif; --font-body: 'Quicksand', sans-serif;
+            --p100: #fce7f3; --p200: #fbcfe8; --p300: #f9a8d4; --p400: #f472b6; --p500: #ec4899; --p600: #db2777; --on-p500: #fff;
+            --item-bg: rgba(253,242,248,.6); --item-hover: rgba(252,231,243,.8); --border-soft: #fce7f3; --border-mid: #fbcfe8;
+            --surface: rgba(255,255,255,.8); --surface-hover: #fff; --drawer-bg: rgba(255,255,255,.95); --toast-bg: rgba(255,255,255,.9);
+            --input-bg: #fff; --input-text: #334155; --muted4: #94a3b8; --muted3: #cbd5e1;
+            --fn-bg: #fce7f3; --fn-tx: #db2777; --fn-sh: #f8a5c2;
+            --num-bg: #fff; --num-tx: #334155; --num-sh: #e2e8f0;
+            --op-bg: #ffedd5; --op-tx: #f97316; --op-sh: #fbc531;
+            --sign-bg: #f3e8ff; --sign-tx: #9333ea; --sign-sh: #d8b4fe;
+            --eq-bg: #ec4899; --eq-tx: #fff; --eq-sh: #db2777;
+            --cheek: #ff9ebb; --hover-filter: brightness(.96); --key-depth: 6px;
         }
 
-        .theme-mint {
-            --bg-gradient: linear-gradient(135deg, #c7ecee 0%, #e8f8f5 100%);
-            --card-bg: #e3f6f5;
-            --screen-bg: #f7fcfb;
-            --screen-text: #10ac84;
-            --screen-subtext: #7bed9f;
-            --btn-num-bg: #ffffff;
-            --btn-num-text: #2e86de;
-            --btn-num-shadow: #c8d6e5;
-            --btn-op-bg: #b2bec3;
-            --btn-op-bg-mint: #c7ecee;
-            --btn-op-text: #0097e6;
-            --btn-op-shadow: #81ecec;
-            --btn-eq-bg: #1dd1a1;
-            --btn-eq-text: #ffffff;
-            --btn-eq-shadow: #10ac84;
-            --accent-color: #1dd1a1;
-            --border-color: #a8e6cf;
+        /* Industrial: brushed steel + amber LCD + safety orange */
+        .theme-industrial {
+            --page-bg: repeating-linear-gradient(45deg, rgba(255,255,255,.018) 0 10px, transparent 10px 20px), linear-gradient(135deg, #17191c 0%, #2a2e33 100%);
+            --card-bg: #2a2e33; --screen-bg: #14120c; --screen-text: #ffb000; --screen-subtext: #9a7414;
+            --shell-border: #4a5058; --shell-shadow: 0 24px 48px -12px rgba(0,0,0,.7), inset 0 0 0 1px rgba(255,255,255,.06);
+            --shell-pattern: repeating-linear-gradient(90deg, rgba(255,255,255,.03) 0 2px, transparent 2px 4px);
+            --screen-border: #0b0c0e; --screen-pattern: repeating-linear-gradient(0deg, rgba(0,0,0,.22) 0 1px, transparent 1px 3px);
+            --screen-glow: 0 0 8px rgba(255,176,0,.45);
+            --inner-shadow: inset 0 2px 10px rgba(0,0,0,.8);
+            --r-shell: 10px; --r-screen: 4px; --r-md: 4px; --r-sm: 3px;
+            --font-display: 'Chakra Petch', sans-serif; --font-body: 'IBM Plex Mono', monospace;
+            --p100: #3a4047; --p200: #4b5259; --p300: #8a93a0; --p400: #ffb000; --p500: #e85d00; --p600: #ffb000; --on-p500: #fff;
+            --item-bg: #30353b; --item-hover: #3b4148; --border-soft: #4a5058; --border-mid: #ffb000;
+            --surface: #3a4047; --surface-hover: #4b5259; --drawer-bg: rgba(35,39,43,.97); --toast-bg: #2a2e33;
+            --input-bg: #14181b; --input-text: #f1f3f5; --muted4: #8a93a0; --muted3: #6b7480;
+            --fn-bg: #5a626b; --fn-tx: #f1f3f5; --fn-sh: #1b1e21;
+            --num-bg: #3a4047; --num-tx: #f1f3f5; --num-sh: #181b1e;
+            --op-bg: #4b5259; --op-tx: #ffb000; --op-sh: #1b1e21;
+            --sign-bg: #3a4047; --sign-tx: #9fb3c8; --sign-sh: #181b1e;
+            --eq-bg: #ff6a00; --eq-tx: #111; --eq-sh: #a84300;
+            --cheek: #ffb000; --hover-filter: brightness(1.15); --key-depth: 5px;
         }
 
-        .theme-lavender {
-            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
-            --card-bg: #f3e8ff;
-            --screen-bg: #faf5ff;
-            --screen-text: #7c3aed;
-            --screen-subtext: #a78bfa;
-            --btn-num-bg: #ffffff;
-            --btn-num-text: #4c1d95;
-            --btn-num-shadow: #ddd6fe;
-            --btn-op-bg: #ddd6fe;
-            --btn-op-text: #6d28d9;
-            --btn-op-shadow: #c4b5fd;
-            --btn-eq-bg: #a78bfa;
-            --btn-eq-text: #ffffff;
-            --btn-eq-shadow: #7c3aed;
-            --accent-color: #a78bfa;
-            --border-color: #ddd6fe;
+        /* High contrast: black + white + vivid neon accents */
+        .theme-contrast {
+            --page-bg: linear-gradient(135deg, #000000 0%, #0b0b1a 100%);
+            --card-bg: #000; --screen-bg: #000; --screen-text: #ffe600; --screen-subtext: #ffffff;
+            --shell-border: #ffffff; --shell-shadow: 0 0 0 2px #000, 0 0 36px rgba(255,230,0,.25); --shell-pattern: none;
+            --screen-border: #ffffff; --screen-pattern: none; --screen-glow: none;
+            --inner-shadow: none;
+            --r-shell: 28px; --r-screen: 18px; --r-md: 14px; --r-sm: 10px;
+            --font-display: 'Atkinson Hyperlegible', sans-serif; --font-body: 'Atkinson Hyperlegible', sans-serif;
+            --p100: #1f1f1f; --p200: #333; --p300: #ffffff; --p400: #ffe600; --p500: #ffe600; --p600: #ffe600; --on-p500: #000;
+            --item-bg: #111; --item-hover: #222; --border-soft: #ffffff; --border-mid: #ffe600;
+            --surface: #222; --surface-hover: #333; --drawer-bg: rgba(0,0,0,.98); --toast-bg: #000;
+            --input-bg: #000; --input-text: #fff; --muted4: #d0d0d0; --muted3: #a8a8a8;
+            --fn-bg: #00e5ff; --fn-tx: #000; --fn-sh: #007f8f;
+            --num-bg: #ffffff; --num-tx: #000; --num-sh: #7a7a7a;
+            --op-bg: #ffe600; --op-tx: #000; --op-sh: #8a7c00;
+            --sign-bg: #c9a8ff; --sign-tx: #000; --sign-sh: #6b4fb0;
+            --eq-bg: #00e676; --eq-tx: #000; --eq-sh: #00793d;
+            --cheek: #00e5ff; --hover-filter: brightness(.9); --key-depth: 6px;
         }
+
+        /* ---- Theme application (maps hard-coded utilities to theme variables) ---- */
+        body[class*="theme-"] { background: var(--page-bg) !important; font-family: var(--font-body); }
+        body .font-fredoka { font-family: var(--font-display) !important; }
+        body .font-quicksand { font-family: var(--font-body) !important; }
+
+        body .calc-shell { border-color: var(--shell-border) !important; box-shadow: var(--shell-shadow) !important; border-radius: var(--r-shell) !important; background-image: var(--shell-pattern); }
+        body .calc-screen { border-color: var(--screen-border) !important; box-shadow: var(--inner-shadow) !important; border-radius: var(--r-screen) !important; background-image: var(--screen-pattern); }
+        body .calc-drawer { background-color: var(--drawer-bg) !important; border-radius: var(--r-shell) !important; }
+        body #main-display { text-shadow: var(--screen-glow); }
+        body #toast { background-color: var(--toast-bg) !important; border-color: var(--border-mid) !important; }
+        body .face-cheek { fill: var(--cheek); }
+        body .rounded-2xl { border-radius: var(--r-md) !important; }
+        body .rounded-xl { border-radius: var(--r-sm) !important; }
+
+        body .text-pink-300 { color: var(--p300) !important; }
+        body .text-pink-400 { color: var(--p400) !important; }
+        body .text-pink-500 { color: var(--p500) !important; }
+        body .text-pink-600 { color: var(--p600) !important; }
+        body .bg-pink-100 { background-color: var(--p100) !important; }
+        body .hover\:bg-pink-200:hover { background-color: var(--p200) !important; }
+        body .bg-pink-500 { background-color: var(--p500) !important; color: var(--on-p500) !important; }
+        body .bg-pink-50\/60 { background-color: var(--item-bg) !important; }
+        body .hover\:bg-pink-100\/80:hover { background-color: var(--item-hover) !important; }
+        body .border-pink-100, body .border-pink-100\/50 { border-color: var(--border-soft) !important; }
+        body .border-pink-200 { border-color: var(--border-mid) !important; }
+        body .bg-white\/80 { background-color: var(--surface) !important; }
+        body .hover\:bg-white:hover { background-color: var(--surface-hover) !important; }
+        body .text-slate-400 { color: var(--muted4) !important; }
+        body .text-slate-300 { color: var(--muted3) !important; }
+        body .bg-white, body select { background-color: var(--input-bg) !important; }
+        body select { color: var(--input-text) !important; }
+        body select option { background-color: var(--input-bg); color: var(--input-text); }
+
+        /* Calculator keys */
+        body .key-fn   { --k-bg: var(--fn-bg);   --k-tx: var(--fn-tx);   --k-sh: var(--fn-sh); }
+        body .key-num  { --k-bg: var(--num-bg);  --k-tx: var(--num-tx);  --k-sh: var(--num-sh); }
+        body .key-op   { --k-bg: var(--op-bg);   --k-tx: var(--op-tx);   --k-sh: var(--op-sh); }
+        body .key-sign { --k-bg: var(--sign-bg); --k-tx: var(--sign-tx); --k-sh: var(--sign-sh); }
+        body .key-eq   { --k-bg: var(--eq-bg);   --k-tx: var(--eq-tx);   --k-sh: var(--eq-sh); }
+        body .btn-calc.key, body .btn-calc.key:hover { background-color: var(--k-bg) !important; color: var(--k-tx) !important; }
+        body .btn-calc.key:not(:active) { box-shadow: 0 var(--key-depth) 0 0 var(--k-sh) !important; }
+        body .btn-calc.key:hover { filter: var(--hover-filter); }
 
         /* Cute Bubbly Button Effects */
         .btn-calc {
@@ -161,7 +210,7 @@
         }
     </style>
 </head>
-<body class="theme-strawberry bg-gradient-to-br min-h-screen flex items-center justify-center p-3 sm:p-4 overflow-x-hidden">
+<body class="theme-kawaii bg-gradient-to-br min-h-screen flex items-center justify-center p-3 sm:p-4 overflow-x-hidden">
 
     <!-- Toast Notification -->
     <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md px-5 py-2.5 rounded-full shadow-lg border border-pink-200 text-pink-600 font-bold text-sm flex items-center gap-2 transform -translate-y-20 opacity-0 transition-all duration-300 z-50">
@@ -170,7 +219,7 @@
     </div>
 
     <!-- Main Container (Mobile First Tailored 375px - 420px) -->
-    <div class="w-full max-w-[400px] bg-[var(--card-bg)] rounded-[38px] p-5 shadow-card transition-all duration-300 relative border-4 border-white/60 backdrop-blur-sm">
+    <div class="w-full max-w-[400px] bg-[var(--card-bg)] rounded-[38px] calc-shell p-5 shadow-card transition-all duration-300 relative border-4 border-white/60 backdrop-blur-sm">
 
         <!-- Top Header & Controls -->
         <div class="flex items-center justify-between mb-3 px-1">
@@ -183,8 +232,8 @@
                         <circle class="eye-blink fill-current" cx="30" cy="45" r="7"/>
                         <circle class="eye-blink fill-current" cx="70" cy="45" r="7"/>
                         <!-- Cheeks -->
-                        <circle fill="#ff9ebb" opacity="0.6" cx="20" cy="55" r="8"/>
-                        <circle fill="#ff9ebb" opacity="0.6" cx="80" cy="55" r="8"/>
+                        <circle class="face-cheek" fill="#ff9ebb" opacity="0.6" cx="20" cy="55" r="8"/>
+                        <circle class="face-cheek" fill="#ff9ebb" opacity="0.6" cx="80" cy="55" r="8"/>
                         <!-- Smile Mouth -->
                         <path id="mouth" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" d="M 40 62 Q 50 72 60 62" />
                     </svg>
@@ -217,7 +266,7 @@
         </div>
 
         <!-- Display Screen -->
-        <div class="bg-[var(--screen-bg)] rounded-[28px] p-4 mb-4 shadow-inner-soft border-2 border-white/80 relative overflow-hidden group">
+        <div class="bg-[var(--screen-bg)] rounded-[28px] calc-screen p-4 mb-4 shadow-inner-soft border-2 border-white/80 relative overflow-hidden group">
             
             <!-- Calculation History Preview (Top Line) -->
             <div id="history-display" class="h-6 text-right font-quicksand font-semibold text-sm text-[var(--screen-subtext)] overflow-hidden text-ellipsis whitespace-nowrap px-1">
@@ -239,7 +288,7 @@
         </div>
 
         <!-- Currency Panel -->
-        <div id="fx-panel" class="hidden bg-[var(--screen-bg)] rounded-[24px] p-3 mb-4 shadow-inner-soft border-2 border-white/80">
+        <div id="fx-panel" class="hidden bg-[var(--screen-bg)] rounded-[24px] calc-screen p-3 mb-4 shadow-inner-soft border-2 border-white/80">
             <div class="flex items-center gap-2">
                 <select id="fx-from" onchange="onFxChange()" class="flex-1 min-w-0 rounded-xl bg-white text-slate-700 font-fredoka font-semibold text-sm px-2 py-2 border border-pink-100 outline-none"></select>
                 <button onclick="swapCurrencies()" class="w-9 h-9 shrink-0 rounded-xl bg-pink-100 text-pink-500 flex items-center justify-center active:scale-90 transition" title="對調">
@@ -260,56 +309,56 @@
         <!-- Keypad Grid Layout -->
         <div class="grid grid-cols-4 gap-2.5 sm:gap-3">
             <!-- Row 1 -->
-            <button onclick="handleClear()" class="btn-calc h-14 rounded-2xl bg-pink-100 hover:bg-pink-200 text-pink-600 font-fredoka font-bold text-lg shadow-[0_6px_0_0_#f8a5c2] active:shadow-none flex items-center justify-center">
+            <button onclick="handleClear()" class="btn-calc key key-fn h-14 rounded-2xl bg-pink-100 hover:bg-pink-200 text-pink-600 font-fredoka font-bold text-lg shadow-[0_6px_0_0_#f8a5c2] active:shadow-none flex items-center justify-center">
                 <span id="btn-c-text">AC</span>
             </button>
-            <button onclick="handleBackspace()" class="btn-calc h-14 rounded-2xl bg-pink-100 hover:bg-pink-200 text-pink-600 font-fredoka font-bold text-lg shadow-[0_6px_0_0_#f8a5c2] active:shadow-none flex items-center justify-center">
+            <button onclick="handleBackspace()" class="btn-calc key key-fn h-14 rounded-2xl bg-pink-100 hover:bg-pink-200 text-pink-600 font-fredoka font-bold text-lg shadow-[0_6px_0_0_#f8a5c2] active:shadow-none flex items-center justify-center">
                 <i class="fa-solid fa-delete-left"></i>
             </button>
-            <button onclick="handlePercent()" class="btn-calc h-14 rounded-2xl bg-pink-100 hover:bg-pink-200 text-pink-600 font-fredoka font-bold text-lg shadow-[0_6px_0_0_#f8a5c2] active:shadow-none flex items-center justify-center">
+            <button onclick="handlePercent()" class="btn-calc key key-fn h-14 rounded-2xl bg-pink-100 hover:bg-pink-200 text-pink-600 font-fredoka font-bold text-lg shadow-[0_6px_0_0_#f8a5c2] active:shadow-none flex items-center justify-center">
                 %
             </button>
-            <button onclick="handleOperator('÷')" class="btn-calc h-14 rounded-2xl bg-orange-100 hover:bg-orange-200 text-orange-500 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#fbc531] active:shadow-none flex items-center justify-center">
+            <button onclick="handleOperator('÷')" class="btn-calc key key-op h-14 rounded-2xl bg-orange-100 hover:bg-orange-200 text-orange-500 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#fbc531] active:shadow-none flex items-center justify-center">
                 ÷
             </button>
 
             <!-- Row 2 -->
-            <button onclick="handleNumber('7')" class="btn-calc h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">7</button>
-            <button onclick="handleNumber('8')" class="btn-calc h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">8</button>
-            <button onclick="handleNumber('9')" class="btn-calc h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">9</button>
-            <button onclick="handleOperator('×')" class="btn-calc h-14 rounded-2xl bg-orange-100 hover:bg-orange-200 text-orange-500 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#fbc531] active:shadow-none flex items-center justify-center">
+            <button onclick="handleNumber('7')" class="btn-calc key key-num h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">7</button>
+            <button onclick="handleNumber('8')" class="btn-calc key key-num h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">8</button>
+            <button onclick="handleNumber('9')" class="btn-calc key key-num h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">9</button>
+            <button onclick="handleOperator('×')" class="btn-calc key key-op h-14 rounded-2xl bg-orange-100 hover:bg-orange-200 text-orange-500 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#fbc531] active:shadow-none flex items-center justify-center">
                 ×
             </button>
 
             <!-- Row 3 -->
-            <button onclick="handleNumber('4')" class="btn-calc h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">4</button>
-            <button onclick="handleNumber('5')" class="btn-calc h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">5</button>
-            <button onclick="handleNumber('6')" class="btn-calc h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">6</button>
-            <button onclick="handleOperator('-')" class="btn-calc h-14 rounded-2xl bg-orange-100 hover:bg-orange-200 text-orange-500 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#fbc531] active:shadow-none flex items-center justify-center">
+            <button onclick="handleNumber('4')" class="btn-calc key key-num h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">4</button>
+            <button onclick="handleNumber('5')" class="btn-calc key key-num h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">5</button>
+            <button onclick="handleNumber('6')" class="btn-calc key key-num h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">6</button>
+            <button onclick="handleOperator('-')" class="btn-calc key key-op h-14 rounded-2xl bg-orange-100 hover:bg-orange-200 text-orange-500 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#fbc531] active:shadow-none flex items-center justify-center">
                 -
             </button>
 
             <!-- Row 4 -->
-            <button onclick="handleNumber('1')" class="btn-calc h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">1</button>
-            <button onclick="handleNumber('2')" class="btn-calc h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">2</button>
-            <button onclick="handleNumber('3')" class="btn-calc h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">3</button>
-            <button onclick="handleOperator('+')" class="btn-calc h-14 rounded-2xl bg-orange-100 hover:bg-orange-200 text-orange-500 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#fbc531] active:shadow-none flex items-center justify-center">
+            <button onclick="handleNumber('1')" class="btn-calc key key-num h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">1</button>
+            <button onclick="handleNumber('2')" class="btn-calc key key-num h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">2</button>
+            <button onclick="handleNumber('3')" class="btn-calc key key-num h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">3</button>
+            <button onclick="handleOperator('+')" class="btn-calc key key-op h-14 rounded-2xl bg-orange-100 hover:bg-orange-200 text-orange-500 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#fbc531] active:shadow-none flex items-center justify-center">
                 +
             </button>
 
             <!-- Row 5 -->
-            <button onclick="handleToggleSign()" class="btn-calc h-14 rounded-2xl bg-purple-100 hover:bg-purple-200 text-purple-600 font-fredoka font-bold text-lg shadow-[0_6px_0_0_#d8b4fe] active:shadow-none flex items-center justify-center">
+            <button onclick="handleToggleSign()" class="btn-calc key key-sign h-14 rounded-2xl bg-purple-100 hover:bg-purple-200 text-purple-600 font-fredoka font-bold text-lg shadow-[0_6px_0_0_#d8b4fe] active:shadow-none flex items-center justify-center">
                 ⁺/₋
             </button>
-            <button onclick="handleNumber('0')" class="btn-calc h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">0</button>
-            <button onclick="handleDecimal()" class="btn-calc h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">•</button>
-            <button onclick="handleEquals()" class="btn-calc h-14 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white font-fredoka font-bold text-2xl shadow-[0_6px_0_0_#db2777] active:shadow-none flex items-center justify-center">
+            <button onclick="handleNumber('0')" class="btn-calc key key-num h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">0</button>
+            <button onclick="handleDecimal()" class="btn-calc key key-num h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">•</button>
+            <button onclick="handleEquals()" class="btn-calc key key-eq h-14 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white font-fredoka font-bold text-2xl shadow-[0_6px_0_0_#db2777] active:shadow-none flex items-center justify-center">
                 =
             </button>
         </div>
 
         <!-- History Drawer Slide-over -->
-        <div id="history-drawer" class="absolute inset-0 bg-white/95 rounded-[34px] p-5 shadow-2xl transition-all duration-300 transform translate-y-full opacity-0 pointer-events-none flex flex-col z-40 backdrop-blur-md">
+        <div id="history-drawer" class="absolute inset-0 bg-white/95 rounded-[34px] calc-drawer p-5 shadow-2xl transition-all duration-300 transform translate-y-full opacity-0 pointer-events-none flex flex-col z-40 backdrop-blur-md">
             <div class="flex items-center justify-between pb-3 border-b border-pink-100">
                 <div class="flex items-center gap-2 text-pink-500 font-fredoka font-bold text-lg">
                     <i class="fa-solid fa-clock-rotate-left"></i>
@@ -354,7 +403,7 @@
         let historyLogs = [];
         let currentThemeIndex = 0;
 
-        const themes = ['strawberry', 'mint', 'lavender'];
+        const themes = ['kawaii', 'industrial', 'contrast'];
 
         // Web Audio API for cute pop sound effects
         const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -425,17 +474,24 @@
             }
         }
 
-        // Cycle Color Themes
+        // Themes
+        const themeNames = {
+            kawaii: 'Kawaii 可愛 🍓',
+            industrial: 'Industrial 工業 ⚙️',
+            contrast: 'High Contrast 高對比 ◐'
+        };
+
+        function applyTheme(name) {
+            if (!themes.includes(name)) name = themes[0];
+            currentThemeIndex = themes.indexOf(name);
+            document.body.className = `theme-${name} bg-gradient-to-br min-h-screen flex items-center justify-center p-3 sm:p-4 overflow-x-hidden`;
+            return name;
+        }
+
         function cycleTheme() {
-            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-            const newTheme = themes[currentThemeIndex];
-            document.body.className = `theme-${newTheme} bg-gradient-to-br min-h-screen flex items-center justify-center p-3 sm:p-4 overflow-x-hidden`;
-            
-            let themeName = "Strawberry Milk 🍓";
-            if (newTheme === 'mint') themeName = "Mint Ice Cream 🍦";
-            if (newTheme === 'lavender') themeName = "Lavender Berry 🫐";
-            
-            showToast(themeName);
+            const name = applyTheme(themes[(currentThemeIndex + 1) % themes.length]);
+            fxSafeSet('mochicalc_theme', name);
+            showToast(themeNames[name]);
             playCuteSound('pop');
         }
 
@@ -609,6 +665,7 @@
         function addHistoryEntry(expression, result) {
             historyLogs.unshift({ expression, result });
             if (historyLogs.length > 20) historyLogs.pop();
+            saveHistory();
             renderHistoryList();
         }
 
@@ -643,6 +700,7 @@
             playCuteSound('clear');
             if (historyTab === 'fx') fxHistoryLogs = [];
             else historyLogs = [];
+            saveHistory();
             renderHistoryList();
             showToast(historyTab === 'fx' ? "匯率記錄已清除!" : "History Cleared!");
         }
@@ -848,6 +906,7 @@
             if (!last || last.amount !== entry.amount || last.from !== from || last.to !== to || last.result !== entry.result) {
                 fxHistoryLogs.unshift(entry);
                 if (fxHistoryLogs.length > 20) fxHistoryLogs.pop();
+                saveHistory();
                 renderHistoryList();
             }
 
@@ -858,6 +917,33 @@
         // ===== 歷史分頁 (計算 / 匯率) =====
         let historyTab = 'calc';
         let fxHistoryLogs = [];
+
+        // ===== 歷史記錄存入 localStorage =====
+        const HIST_CALC_KEY = 'mochicalc_hist_calc';
+        const HIST_FX_KEY = 'mochicalc_hist_fx';
+
+        function saveHistory() {
+            fxSafeSet(HIST_CALC_KEY, JSON.stringify(historyLogs));
+            fxSafeSet(HIST_FX_KEY, JSON.stringify(fxHistoryLogs));
+        }
+
+        function loadHistory() {
+            const read = (k) => {
+                try {
+                    const a = JSON.parse(fxSafeGet(k) || '[]');
+                    return Array.isArray(a) ? a : [];
+                } catch (e) { return []; }
+            };
+            historyLogs = read(HIST_CALC_KEY).filter(it =>
+                it && typeof it.expression === 'string' && typeof it.result === 'string' &&
+                /^[\d.,\-+e×÷ ]*$/.test(it.expression) &&
+                /^(Error|-?[\d.]+(e[+-]?\d+)?)$/.test(it.result)
+            ).slice(0, 20);
+            fxHistoryLogs = read(HIST_FX_KEY).filter(it =>
+                it && FX_CURRENCIES[it.from] && FX_CURRENCIES[it.to] &&
+                [it.amount, it.result, it.rate].every(Number.isFinite)
+            ).slice(0, 20);
+        }
 
         function setHistoryTab(tab, silent) {
             historyTab = tab;
@@ -930,7 +1016,9 @@
 
         // Initialize display
         window.onload = function() {
+            applyTheme(fxSafeGet('mochicalc_theme'));
             initFx();
+            loadHistory();
             setHistoryTab('calc', true);
             updateDisplay();
         };
