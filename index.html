@@ -213,6 +213,72 @@
             50% { transform: scale(1.15); }
             100% { transform: scale(1); }
         }
+
+        /* Custom dropdown (mobile + desktop same look) */
+        .cdd { position: relative; flex: 1; min-width: 0; }
+        .cdd-btn {
+            width: 100%;
+            display: flex; align-items: center; justify-content: space-between; gap: 6px;
+            border-radius: 0.5rem;
+            background: rgba(255,255,255,0.9);
+            border: 1px solid var(--border-soft, #fce7f3);
+            padding: 0.375rem 0.5rem;
+            font-size: 0.75rem;
+            font-family: var(--font-body, inherit);
+            font-weight: 600;
+            color: var(--input-text, #334155);
+            text-align: left;
+            outline: none;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .cdd-btn:focus { border-color: var(--p400, #f472b6); box-shadow: 0 0 0 2px rgba(244,114,182,0.15); }
+        .cdd-btn .cdd-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+        .cdd-btn .cdd-caret { flex-shrink: 0; font-size: 0.65rem; opacity: 0.55; transition: transform 0.15s; }
+        .cdd.open .cdd-btn .cdd-caret { transform: rotate(180deg); }
+        .cdd-menu {
+            display: none;
+            position: absolute;
+            left: 0; right: 0;
+            top: calc(100% + 4px);
+            z-index: 50;
+            max-height: 220px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            background: var(--drawer-bg, #fff);
+            border: 1px solid var(--border-mid, #fbcfe8);
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 28px -8px rgba(0,0,0,0.18);
+            padding: 0.35rem;
+        }
+        .cdd.open .cdd-menu { display: block; }
+        .cdd-group {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--p500, #ec4899);
+            padding: 0.35rem 0.5rem 0.15rem;
+            letter-spacing: 0.02em;
+        }
+        .cdd-item {
+            display: block;
+            width: 100%;
+            text-align: left;
+            border: none;
+            background: transparent;
+            border-radius: 0.5rem;
+            padding: 0.45rem 0.55rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--input-text, #334155);
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .cdd-item:hover, .cdd-item:active { background: var(--item-hover, rgba(252,231,243,0.8)); }
+        .cdd-item.active { background: var(--p100, #fce7f3); color: var(--p600, #db2777); }
+        .cdd-item.muted { color: var(--muted4, #94a3b8); }
+        /* inline history variant slightly denser */
+        .cdd.cdd-inline .cdd-btn { padding: 0.25rem 0.4rem; font-size: 0.7rem; }
+        .cdd.cdd-inline .cdd-menu { max-height: 180px; }
     </style>
 </head>
 <body class="theme-kawaii bg-gradient-to-br min-h-screen flex items-center justify-center p-2 sm:p-3 overflow-x-hidden">
@@ -292,14 +358,17 @@
             </div>
         </div>
 
-        <!-- Note / Index: 三層生活分類下拉，選空白才自行輸入 -->
+        <!-- Note / Index: 自訂下拉（手機/電腦一致），選空白才自行輸入 -->
         <div class="mb-2 px-0.5">
             <div class="flex items-center gap-1.5">
                 <label class="shrink-0 text-[11px] font-fredoka font-bold text-pink-500">📌</label>
-                <select id="note-select" onchange="onNoteSelectChange()"
-                        class="flex-1 min-w-0 rounded-lg bg-white/90 border border-pink-100 px-2 py-1.5 text-xs font-quicksand font-semibold text-slate-700 outline-none focus:border-pink-300">
-                    <!-- options filled by JS -->
-                </select>
+                <div id="note-cdd" class="cdd" data-value="">
+                    <button type="button" class="cdd-btn" onclick="toggleNoteDropdown(event)">
+                        <span class="cdd-label">— 選擇索引 —</span>
+                        <i class="fa-solid fa-chevron-down cdd-caret"></i>
+                    </button>
+                    <div class="cdd-menu" id="note-cdd-menu"></div>
+                </div>
                 <button type="button" onclick="clearNoteInput()"
                         class="shrink-0 w-7 h-7 rounded-lg bg-pink-50 text-pink-400 hover:bg-pink-100 flex items-center justify-center active:scale-90 transition" title="清除">
                     <i class="fa-solid fa-xmark text-[10px]"></i>
@@ -427,7 +496,7 @@
 
         const themes = ['kawaii', 'industrial', 'contrast'];
 
-        // ===== 索引：三層生活物品預設 =====
+        // ===== 索引：三層生活物品預設 + 自訂下拉（手機/電腦一致） =====
         const NOTE_PRESETS = [
             {
                 label: '飲食',
@@ -443,56 +512,112 @@
             }
         ];
 
-        function buildNoteSelectOptions(selectedValue) {
-            let html = '<option value="">— 選擇索引 —</option>';
-            html += '<option value="__custom__"' + (selectedValue === '__custom__' ? ' selected' : '') + '>✏️ 自行輸入…</option>';
+        function noteLabelForValue(v) {
+            if (v === '__custom__') return '✏️ 自行輸入…';
+            if (!v) return '— 選擇索引 —';
+            return v;
+        }
+
+        function isPresetNote(n) {
+            const s = (n || '').trim();
+            if (!s) return false;
+            return NOTE_PRESETS.some(g => g.items.indexOf(s) !== -1);
+        }
+
+        function buildCddMenuHtml(selectedValue) {
+            let html = '';
+            const emptyActive = !selectedValue ? ' active' : '';
+            html += '<button type="button" class="cdd-item muted' + emptyActive + '" data-pick="">— 選擇索引 —</button>';
+            const customActive = selectedValue === '__custom__' ? ' active' : '';
+            html += '<button type="button" class="cdd-item' + customActive + '" data-pick="__custom__">✏️ 自行輸入…</button>';
             NOTE_PRESETS.forEach(group => {
-                html += '<optgroup label="' + group.label + '">';
+                html += '<div class="cdd-group">' + group.label + '</div>';
                 group.items.forEach(item => {
-                    const sel = (selectedValue === item) ? ' selected' : '';
-                    html += '<option value="' + item + '"' + sel + '>' + item + '</option>';
+                    const act = (selectedValue === item) ? ' active' : '';
+                    html += '<button type="button" class="cdd-item' + act + '" data-pick="' + String(item).replace(/&/g,'&amp;').replace(/"/g,'&quot;') + '">' + item + '</button>';
                 });
-                html += '</optgroup>';
             });
             return html;
         }
 
-        function initNoteSelect() {
-            const sel = document.getElementById('note-select');
-            if (!sel) return;
-            sel.innerHTML = buildNoteSelectOptions('');
-            const custom = document.getElementById('note-custom');
-            if (custom) custom.classList.add('hidden');
+        function closeAllNoteDropdowns() {
+            document.querySelectorAll('.cdd.open').forEach(el => el.classList.remove('open'));
         }
 
-        function onNoteSelectChange() {
-            const sel = document.getElementById('note-select');
+        function toggleNoteDropdown(e) {
+            if (e) e.stopPropagation();
+            const cdd = document.getElementById('note-cdd');
+            if (!cdd) return;
+            const willOpen = !cdd.classList.contains('open');
+            closeAllNoteDropdowns();
+            if (willOpen) {
+                const val = cdd.dataset.value || '';
+                const menu = document.getElementById('note-cdd-menu');
+                menu.innerHTML = buildCddMenuHtml(val);
+                menu.onclick = function (ev) {
+                    const t = ev.target.closest('[data-pick]');
+                    if (!t) return;
+                    pickNoteValue(ev, t.getAttribute('data-pick'));
+                };
+                cdd.classList.add('open');
+            }
+        }
+
+        function pickNoteValue(e, val) {
+            if (e) e.stopPropagation();
+            const cdd = document.getElementById('note-cdd');
             const custom = document.getElementById('note-custom');
-            if (!sel || !custom) return;
-            if (sel.value === '__custom__') {
-                custom.classList.remove('hidden');
-                custom.focus();
+            if (!cdd) return;
+            cdd.dataset.value = val;
+            const label = cdd.querySelector('.cdd-label');
+            if (label) label.textContent = noteLabelForValue(val);
+            cdd.classList.remove('open');
+            if (val === '__custom__') {
+                if (custom) {
+                    custom.classList.remove('hidden');
+                    custom.focus();
+                }
             } else {
-                custom.classList.add('hidden');
+                if (custom) {
+                    custom.classList.add('hidden');
+                    custom.value = '';
+                }
+            }
+            playCuteSound('pop');
+        }
+
+        function initNoteSelect() {
+            const cdd = document.getElementById('note-cdd');
+            if (!cdd) return;
+            cdd.dataset.value = '';
+            const label = cdd.querySelector('.cdd-label');
+            if (label) label.textContent = noteLabelForValue('');
+            const menu = document.getElementById('note-cdd-menu');
+            if (menu) menu.innerHTML = '';
+            const custom = document.getElementById('note-custom');
+            if (custom) {
                 custom.value = '';
+                custom.classList.add('hidden');
             }
         }
 
         function getNoteValue() {
-            const sel = document.getElementById('note-select');
+            const cdd = document.getElementById('note-cdd');
             const custom = document.getElementById('note-custom');
-            if (!sel) return '';
-            if (sel.value === '__custom__') {
-                return (custom ? custom.value : '').trim();
-            }
-            return (sel.value || '').trim();
+            if (!cdd) return '';
+            const v = cdd.dataset.value || '';
+            if (v === '__custom__') return (custom ? custom.value : '').trim();
+            return v.trim();
         }
 
         function clearNoteInput() {
-            const sel = document.getElementById('note-select');
+            closeAllNoteDropdowns();
+            const cdd = document.getElementById('note-cdd');
             const custom = document.getElementById('note-custom');
-            if (sel) {
-                sel.value = '';
+            if (cdd) {
+                cdd.dataset.value = '';
+                const label = cdd.querySelector('.cdd-label');
+                if (label) label.textContent = noteLabelForValue('');
             }
             if (custom) {
                 custom.value = '';
@@ -501,23 +626,22 @@
         }
 
         function setNoteValue(note) {
-            const sel = document.getElementById('note-select');
+            const cdd = document.getElementById('note-cdd');
             const custom = document.getElementById('note-custom');
-            if (!sel) return;
+            if (!cdd) return;
             const n = (note || '').trim();
-            // 是否在預設清單中
-            let found = false;
-            NOTE_PRESETS.forEach(g => {
-                if (g.items.indexOf(n) !== -1) found = true;
-            });
+            closeAllNoteDropdowns();
             if (!n) {
-                sel.innerHTML = buildNoteSelectOptions('');
+                cdd.dataset.value = '';
+                if (cdd.querySelector('.cdd-label')) cdd.querySelector('.cdd-label').textContent = noteLabelForValue('');
                 if (custom) { custom.value = ''; custom.classList.add('hidden'); }
-            } else if (found) {
-                sel.innerHTML = buildNoteSelectOptions(n);
+            } else if (isPresetNote(n)) {
+                cdd.dataset.value = n;
+                if (cdd.querySelector('.cdd-label')) cdd.querySelector('.cdd-label').textContent = n;
                 if (custom) { custom.value = ''; custom.classList.add('hidden'); }
             } else {
-                sel.innerHTML = buildNoteSelectOptions('__custom__');
+                cdd.dataset.value = '__custom__';
+                if (cdd.querySelector('.cdd-label')) cdd.querySelector('.cdd-label').textContent = noteLabelForValue('__custom__');
                 if (custom) {
                     custom.value = n;
                     custom.classList.remove('hidden');
@@ -525,54 +649,100 @@
             }
         }
 
-        /** 歷史 inline 編輯用的下拉 HTML */
+        // --- 歷史 inline 自訂下拉 ---
         function buildInlineNoteSelect(selectedNote, dataAttr) {
             const n = (selectedNote || '').trim();
-            let found = false;
-            NOTE_PRESETS.forEach(g => {
-                if (g.items.indexOf(n) !== -1) found = true;
-            });
-            const useCustom = n && !found;
-            let html = '<select class="inline-note-select flex-1 min-w-0 rounded-lg bg-white border border-pink-200 px-1.5 py-1 text-xs font-quicksand font-semibold text-slate-700 outline-none" ' + dataAttr + ' onchange="onInlineNoteSelectChange(this)">';
-            html += '<option value="">— 無 —</option>';
-            html += '<option value="__custom__"' + (useCustom ? ' selected' : '') + '>✏️ 自行輸入…</option>';
-            NOTE_PRESETS.forEach(group => {
-                html += '<optgroup label="' + group.label + '">';
-                group.items.forEach(item => {
-                    const sel = (!useCustom && n === item) ? ' selected' : '';
-                    html += '<option value="' + item + '"' + sel + '>' + item + '</option>';
-                });
-                html += '</optgroup>';
-            });
-            html += '</select>';
+            const useCustom = n && !isPresetNote(n);
+            const val = useCustom ? '__custom__' : n;
+            const label = useCustom ? noteLabelForValue('__custom__') : (n || '— 無 —');
             const customVal = useCustom ? escapeHtml(n) : '';
             const customHidden = useCustom ? '' : 'hidden';
-            html += '<input type="text" maxlength="12" class="inline-note-custom ' + customHidden + ' flex-1 min-w-0 rounded-lg bg-white border border-pink-200 px-2 py-1 text-xs font-quicksand font-semibold text-slate-700 outline-none" placeholder="自行輸入" value="' + customVal + '">';
-            return html;
+            // unique id via dataAttr hash-ish: just embed dataAttr on root
+            return (
+                '<div class="cdd cdd-inline flex-1 min-w-0" data-value="' + escapeHtml(val) + '" ' + dataAttr + '>' +
+                  '<button type="button" class="cdd-btn" onclick="toggleInlineNoteDropdown(event, this)">' +
+                    '<span class="cdd-label">' + escapeHtml(label === '— 選擇索引 —' ? '— 無 —' : label) + '</span>' +
+                    '<i class="fa-solid fa-chevron-down cdd-caret"></i>' +
+                  '</button>' +
+                  '<div class="cdd-menu"></div>' +
+                '</div>' +
+                '<input type="text" maxlength="12" class="inline-note-custom ' + customHidden + ' flex-1 min-w-0 rounded-lg bg-white border border-pink-200 px-2 py-1 text-xs font-quicksand font-semibold text-slate-700 outline-none" placeholder="自行輸入" value="' + customVal + '">'
+            );
         }
 
-        function onInlineNoteSelectChange(sel) {
-            const row = sel.closest('[data-hist-idx], [data-fx-idx]');
-            if (!row) return;
-            const custom = row.querySelector('.inline-note-custom');
-            if (!custom) return;
-            if (sel.value === '__custom__') {
-                custom.classList.remove('hidden');
-                custom.focus();
-            } else {
-                custom.classList.add('hidden');
-                custom.value = '';
+        function toggleInlineNoteDropdown(e, btn) {
+            if (e) e.stopPropagation();
+            const cdd = btn.closest('.cdd');
+            if (!cdd) return;
+            const willOpen = !cdd.classList.contains('open');
+            closeAllNoteDropdowns();
+            if (willOpen) {
+                const val = cdd.dataset.value || '';
+                const menu = cdd.querySelector('.cdd-menu');
+                if (menu) {
+                    let html = '';
+                    const emptyActive = !val ? ' active' : '';
+                    html += '<button type="button" class="cdd-item muted' + emptyActive + '" data-pick="">— 無 —</button>';
+                    const customActive = val === '__custom__' ? ' active' : '';
+                    html += '<button type="button" class="cdd-item' + customActive + '" data-pick="__custom__">✏️ 自行輸入…</button>';
+                    NOTE_PRESETS.forEach(group => {
+                        html += '<div class="cdd-group">' + group.label + '</div>';
+                        group.items.forEach(item => {
+                            const act = (val === item) ? ' active' : '';
+                            html += '<button type="button" class="cdd-item' + act + '" data-pick="' + String(item).replace(/&/g,'&amp;').replace(/"/g,'&quot;') + '">' + item + '</button>';
+                        });
+                    });
+                    menu.innerHTML = html;
+                    menu.onclick = function (ev) {
+                        const t = ev.target.closest('[data-pick]');
+                        if (!t) return;
+                        pickInlineNoteValue(ev, t, t.getAttribute('data-pick'));
+                    };
+                }
+                cdd.classList.add('open');
             }
         }
 
-        function readInlineNote(row) {
-            const sel = row.querySelector('.inline-note-select');
-            const custom = row.querySelector('.inline-note-custom');
-            if (!sel) return '';
-            if (sel.value === '__custom__') return (custom ? custom.value : '').trim();
-            return (sel.value || '').trim();
+        function pickInlineNoteValue(e, el, val) {
+            if (e) e.stopPropagation();
+            const cdd = el.closest('.cdd');
+            if (!cdd) return;
+            const row = cdd.closest('[data-hist-idx], [data-fx-idx]');
+            cdd.dataset.value = val;
+            const labelEl = cdd.querySelector('.cdd-label');
+            if (labelEl) {
+                if (!val) labelEl.textContent = '— 無 —';
+                else labelEl.textContent = noteLabelForValue(val);
+            }
+            cdd.classList.remove('open');
+            const custom = row ? row.querySelector('.inline-note-custom') : null;
+            if (val === '__custom__') {
+                if (custom) {
+                    custom.classList.remove('hidden');
+                    custom.focus();
+                }
+            } else {
+                if (custom) {
+                    custom.classList.add('hidden');
+                    custom.value = '';
+                }
+            }
+            playCuteSound('pop');
         }
 
+        function readInlineNote(row) {
+            const cdd = row.querySelector('.cdd');
+            const custom = row.querySelector('.inline-note-custom');
+            if (!cdd) return '';
+            const v = cdd.dataset.value || '';
+            if (v === '__custom__') return (custom ? custom.value : '').trim();
+            return v.trim();
+        }
+
+        // 點頁面其他地方關閉下拉
+        document.addEventListener('click', function () {
+            closeAllNoteDropdowns();
+        });
 
         // Web Audio API for cute pop sound effects
         const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -895,9 +1065,9 @@
             if (edit) {
                 edit.classList.remove('hidden');
                 const custom = edit.querySelector('.inline-note-custom:not(.hidden)');
-                const sel = edit.querySelector('.inline-note-select');
+                const btn = edit.querySelector('.cdd-btn');
                 if (custom) { custom.focus(); custom.select(); }
-                else if (sel) sel.focus();
+                else if (btn) btn.focus();
             }
             playCuteSound('pop');
         }
@@ -1247,9 +1417,9 @@
             if (edit) {
                 edit.classList.remove('hidden');
                 const custom = edit.querySelector('.inline-note-custom:not(.hidden)');
-                const sel = edit.querySelector('.inline-note-select');
+                const btn = edit.querySelector('.cdd-btn');
                 if (custom) { custom.focus(); custom.select(); }
-                else if (sel) sel.focus();
+                else if (btn) btn.focus();
             }
             playCuteSound('pop');
         }
@@ -1290,7 +1460,7 @@
         // Keyboard Accessibility Listener
         document.addEventListener('keydown', (e) => {
             // 在索引輸入框打字時，不要觸發計算機快捷鍵
-            if (e.target && (e.target.id === 'note-select' || e.target.id === 'note-custom' || e.target.closest('.note-edit') || e.target.tagName === 'SELECT')) return;
+            if (e.target && (e.target.id === 'note-custom' || e.target.closest('.note-edit') || e.target.closest('.cdd') || e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT')) return;
             if (e.target && e.target.tagName === 'SELECT') return;
             if (e.key >= '0' && e.key <= '9') handleNumber(e.key);
             else if (e.key === '.') handleDecimal();
