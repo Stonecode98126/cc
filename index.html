@@ -40,6 +40,11 @@
             -webkit-user-select: none;
         }
 
+        input, textarea {
+            user-select: text;
+            -webkit-user-select: text;
+        }
+
         body {
             font-family: 'Quicksand', sans-serif;
             touch-action: manipulation;
@@ -52,7 +57,7 @@
             --shell-border: rgba(255,255,255,.6); --shell-shadow: 0 20px 40px -15px rgba(255,182,193,.4); --shell-pattern: none;
             --screen-border: rgba(255,255,255,.8); --screen-pattern: none; --screen-glow: none;
             --inner-shadow: inset 0 3px 6px rgba(0,0,0,.06);
-            --r-shell: 38px; --r-screen: 28px; --r-md: 16px; --r-sm: 12px;
+            --r-shell: 28px; --r-screen: 20px; --r-md: 12px; --r-sm: 10px;
             --font-display: 'Fredoka', sans-serif; --font-body: 'Quicksand', sans-serif;
             --p100: #fce7f3; --p200: #fbcfe8; --p300: #f9a8d4; --p400: #f472b6; --p500: #ec4899; --p600: #db2777; --on-p500: #fff;
             --item-bg: rgba(253,242,248,.6); --item-hover: rgba(252,231,243,.8); --border-soft: #fce7f3; --border-mid: #fbcfe8;
@@ -63,7 +68,7 @@
             --op-bg: #ffedd5; --op-tx: #f97316; --op-sh: #fbc531;
             --sign-bg: #f3e8ff; --sign-tx: #9333ea; --sign-sh: #d8b4fe;
             --eq-bg: #ec4899; --eq-tx: #fff; --eq-sh: #db2777;
-            --cheek: #ff9ebb; --hover-filter: brightness(.96); --key-depth: 6px;
+            --cheek: #ff9ebb; --hover-filter: brightness(.96); --key-depth: 4px;
         }
 
         /* Industrial: brushed steel + amber LCD + safety orange */
@@ -107,7 +112,7 @@
             --op-bg: #ffe600; --op-tx: #000; --op-sh: #8a7c00;
             --sign-bg: #c9a8ff; --sign-tx: #000; --sign-sh: #6b4fb0;
             --eq-bg: #00e676; --eq-tx: #000; --eq-sh: #00793d;
-            --cheek: #00e5ff; --hover-filter: brightness(.9); --key-depth: 6px;
+            --cheek: #00e5ff; --hover-filter: brightness(.9); --key-depth: 4px;
         }
 
         /* ---- Theme application (maps hard-coded utilities to theme variables) ---- */
@@ -210,7 +215,7 @@
         }
     </style>
 </head>
-<body class="theme-kawaii bg-gradient-to-br min-h-screen flex items-center justify-center p-3 sm:p-4 overflow-x-hidden">
+<body class="theme-kawaii bg-gradient-to-br min-h-screen flex items-center justify-center p-2 sm:p-3 overflow-x-hidden">
 
     <!-- Toast Notification -->
     <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md px-5 py-2.5 rounded-full shadow-lg border border-pink-200 text-pink-600 font-bold text-sm flex items-center gap-2 transform -translate-y-20 opacity-0 transition-all duration-300 z-50">
@@ -219,13 +224,13 @@
     </div>
 
     <!-- Main Container (Mobile First Tailored 375px - 420px) -->
-    <div class="w-full max-w-[400px] bg-[var(--card-bg)] rounded-[38px] calc-shell p-5 shadow-card transition-all duration-300 relative border-4 border-white/60 backdrop-blur-sm">
+    <div class="w-full max-w-[360px] bg-[var(--card-bg)] rounded-[28px] calc-shell p-3 shadow-card transition-all duration-300 relative border-[3px] border-white/60 backdrop-blur-sm">
 
         <!-- Top Header & Controls -->
-        <div class="flex items-center justify-between mb-3 px-1">
+        <div class="flex items-center justify-between mb-2 px-0.5">
             <!-- Kawaii Brand & Mood Face -->
             <div class="flex items-center gap-2">
-                <div class="w-9 h-9 rounded-2xl bg-white flex items-center justify-center shadow-sm text-pink-500 text-lg animate-float">
+                <div class="w-8 h-8 rounded-xl bg-white flex items-center justify-center shadow-sm text-pink-500 text-base animate-float">
                     <!-- Dynamic Face SVG -->
                     <svg id="kawaii-face" class="w-6 h-6" viewBox="0 0 100 100">
                         <!-- Eyes -->
@@ -238,38 +243,38 @@
                         <path id="mouth" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" d="M 40 62 Q 50 72 60 62" />
                     </svg>
                 </div>
-                <span class="font-fredoka font-semibold text-pink-600 tracking-wide text-base">MochiCalc</span>
+                <span class="font-fredoka font-semibold text-pink-600 tracking-wide text-sm">MochiCalc</span>
             </div>
 
             <!-- Action Utility Icons -->
             <div class="flex items-center gap-2">
                 <!-- Sound Toggle -->
-                <button id="btn-sound" onclick="toggleSound()" class="w-9 h-9 rounded-2xl bg-white/80 hover:bg-white flex items-center justify-center text-pink-500 shadow-sm transition active:scale-90" title="Sound Effects">
+                <button id="btn-sound" onclick="toggleSound()" class="w-8 h-8 rounded-xl bg-white/80 hover:bg-white flex items-center justify-center text-pink-500 shadow-sm transition active:scale-90" title="Sound Effects">
                     <i id="sound-icon" class="fa-solid fa-volume-high text-xs"></i>
                 </button>
 
                 <!-- Theme Toggle Button -->
-                <button onclick="cycleTheme()" class="w-9 h-9 rounded-2xl bg-white/80 hover:bg-white flex items-center justify-center text-pink-500 shadow-sm transition active:scale-90" title="Change Theme">
+                <button onclick="cycleTheme()" class="w-8 h-8 rounded-xl bg-white/80 hover:bg-white flex items-center justify-center text-pink-500 shadow-sm transition active:scale-90" title="Change Theme">
                     <i class="fa-solid fa-palette text-xs"></i>
                 </button>
 
                 <!-- Currency Toggle -->
-                <button onclick="toggleFx()" class="w-9 h-9 rounded-2xl bg-white/80 hover:bg-white flex items-center justify-center text-pink-500 shadow-sm transition active:scale-90" title="匯率換算">
+                <button onclick="toggleFx()" class="w-8 h-8 rounded-xl bg-white/80 hover:bg-white flex items-center justify-center text-pink-500 shadow-sm transition active:scale-90" title="匯率換算">
                     <i class="fa-solid fa-coins text-xs"></i>
                 </button>
 
                 <!-- History Toggle Button -->
-                <button onclick="toggleHistory()" class="w-9 h-9 rounded-2xl bg-white/80 hover:bg-white flex items-center justify-center text-pink-500 shadow-sm transition active:scale-90 relative" title="History">
+                <button onclick="toggleHistory()" class="w-8 h-8 rounded-xl bg-white/80 hover:bg-white flex items-center justify-center text-pink-500 shadow-sm transition active:scale-90 relative" title="History">
                     <i class="fa-solid fa-clock-rotate-left text-xs"></i>
                 </button>
             </div>
         </div>
 
         <!-- Display Screen -->
-        <div class="bg-[var(--screen-bg)] rounded-[28px] calc-screen p-4 mb-4 shadow-inner-soft border-2 border-white/80 relative overflow-hidden group">
+        <div class="bg-[var(--screen-bg)] rounded-[20px] calc-screen p-2.5 mb-2 shadow-inner-soft border-2 border-white/80 relative overflow-hidden group">
             
             <!-- Calculation History Preview (Top Line) -->
-            <div id="history-display" class="h-6 text-right font-quicksand font-semibold text-sm text-[var(--screen-subtext)] overflow-hidden text-ellipsis whitespace-nowrap px-1">
+            <div id="history-display" class="h-5 text-right font-quicksand font-semibold text-xs text-[var(--screen-subtext)] overflow-hidden text-ellipsis whitespace-nowrap px-1">
                 <!-- Calculated expression preview -->
             </div>
 
@@ -281,14 +286,31 @@
                 </button>
 
                 <!-- Output Text -->
-                <div id="main-display" class="font-fredoka font-bold text-3xl sm:text-4xl text-[var(--screen-text)] text-right overflow-x-auto custom-scrollbar whitespace-nowrap tracking-tight py-1">
+                <div id="main-display" class="font-fredoka font-bold text-2xl sm:text-3xl text-[var(--screen-text)] text-right overflow-x-auto custom-scrollbar whitespace-nowrap tracking-tight py-0.5">
                     0
                 </div>
             </div>
         </div>
 
+        <!-- Note / Index: 三層生活分類下拉，選空白才自行輸入 -->
+        <div class="mb-2 px-0.5">
+            <div class="flex items-center gap-1.5">
+                <label class="shrink-0 text-[11px] font-fredoka font-bold text-pink-500">📌</label>
+                <select id="note-select" onchange="onNoteSelectChange()"
+                        class="flex-1 min-w-0 rounded-lg bg-white/90 border border-pink-100 px-2 py-1.5 text-xs font-quicksand font-semibold text-slate-700 outline-none focus:border-pink-300">
+                    <!-- options filled by JS -->
+                </select>
+                <button type="button" onclick="clearNoteInput()"
+                        class="shrink-0 w-7 h-7 rounded-lg bg-pink-50 text-pink-400 hover:bg-pink-100 flex items-center justify-center active:scale-90 transition" title="清除">
+                    <i class="fa-solid fa-xmark text-[10px]"></i>
+                </button>
+            </div>
+            <input id="note-custom" type="text" maxlength="12" placeholder="自行輸入索引（約10字）"
+                   class="hidden mt-1.5 w-full rounded-lg bg-white/90 border border-pink-100 px-2.5 py-1.5 text-xs font-quicksand font-semibold text-slate-700 outline-none focus:border-pink-300 focus:ring-1 focus:ring-pink-100 transition placeholder:text-slate-300">
+        </div>
+
         <!-- Currency Panel -->
-        <div id="fx-panel" class="hidden bg-[var(--screen-bg)] rounded-[24px] calc-screen p-3 mb-4 shadow-inner-soft border-2 border-white/80">
+        <div id="fx-panel" class="hidden bg-[var(--screen-bg)] rounded-[18px] calc-screen p-2 mb-2 shadow-inner-soft border-2 border-white/80">
             <div class="flex items-center gap-2">
                 <select id="fx-from" onchange="onFxChange()" class="flex-1 min-w-0 rounded-xl bg-white text-slate-700 font-fredoka font-semibold text-sm px-2 py-2 border border-pink-100 outline-none"></select>
                 <button onclick="swapCurrencies()" class="w-9 h-9 shrink-0 rounded-xl bg-pink-100 text-pink-500 flex items-center justify-center active:scale-90 transition" title="對調">
@@ -307,58 +329,58 @@
         </div>
 
         <!-- Keypad Grid Layout -->
-        <div class="grid grid-cols-4 gap-2.5 sm:gap-3">
+        <div class="grid grid-cols-4 gap-1.5 sm:gap-2">
             <!-- Row 1 -->
-            <button onclick="handleClear()" class="btn-calc key key-fn h-14 rounded-2xl bg-pink-100 hover:bg-pink-200 text-pink-600 font-fredoka font-bold text-lg shadow-[0_6px_0_0_#f8a5c2] active:shadow-none flex items-center justify-center">
+            <button onclick="handleClear()" class="btn-calc key key-fn h-11 rounded-xl bg-pink-100 hover:bg-pink-200 text-pink-600 font-fredoka font-bold text-base shadow-[0_4px_0_0_#f8a5c2] active:shadow-none flex items-center justify-center">
                 <span id="btn-c-text">AC</span>
             </button>
-            <button onclick="handleBackspace()" class="btn-calc key key-fn h-14 rounded-2xl bg-pink-100 hover:bg-pink-200 text-pink-600 font-fredoka font-bold text-lg shadow-[0_6px_0_0_#f8a5c2] active:shadow-none flex items-center justify-center">
+            <button onclick="handleBackspace()" class="btn-calc key key-fn h-11 rounded-xl bg-pink-100 hover:bg-pink-200 text-pink-600 font-fredoka font-bold text-base shadow-[0_4px_0_0_#f8a5c2] active:shadow-none flex items-center justify-center">
                 <i class="fa-solid fa-delete-left"></i>
             </button>
-            <button onclick="handlePercent()" class="btn-calc key key-fn h-14 rounded-2xl bg-pink-100 hover:bg-pink-200 text-pink-600 font-fredoka font-bold text-lg shadow-[0_6px_0_0_#f8a5c2] active:shadow-none flex items-center justify-center">
+            <button onclick="handlePercent()" class="btn-calc key key-fn h-11 rounded-xl bg-pink-100 hover:bg-pink-200 text-pink-600 font-fredoka font-bold text-base shadow-[0_4px_0_0_#f8a5c2] active:shadow-none flex items-center justify-center">
                 %
             </button>
-            <button onclick="handleOperator('÷')" class="btn-calc key key-op h-14 rounded-2xl bg-orange-100 hover:bg-orange-200 text-orange-500 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#fbc531] active:shadow-none flex items-center justify-center">
+            <button onclick="handleOperator('÷')" class="btn-calc key key-op h-11 rounded-xl bg-orange-100 hover:bg-orange-200 text-orange-500 font-fredoka font-bold text-lg shadow-[0_4px_0_0_#fbc531] active:shadow-none flex items-center justify-center">
                 ÷
             </button>
 
             <!-- Row 2 -->
-            <button onclick="handleNumber('7')" class="btn-calc key key-num h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">7</button>
-            <button onclick="handleNumber('8')" class="btn-calc key key-num h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">8</button>
-            <button onclick="handleNumber('9')" class="btn-calc key key-num h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">9</button>
-            <button onclick="handleOperator('×')" class="btn-calc key key-op h-14 rounded-2xl bg-orange-100 hover:bg-orange-200 text-orange-500 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#fbc531] active:shadow-none flex items-center justify-center">
+            <button onclick="handleNumber('7')" class="btn-calc key key-num h-11 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-lg shadow-[0_4px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">7</button>
+            <button onclick="handleNumber('8')" class="btn-calc key key-num h-11 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-lg shadow-[0_4px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">8</button>
+            <button onclick="handleNumber('9')" class="btn-calc key key-num h-11 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-lg shadow-[0_4px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">9</button>
+            <button onclick="handleOperator('×')" class="btn-calc key key-op h-11 rounded-xl bg-orange-100 hover:bg-orange-200 text-orange-500 font-fredoka font-bold text-lg shadow-[0_4px_0_0_#fbc531] active:shadow-none flex items-center justify-center">
                 ×
             </button>
 
             <!-- Row 3 -->
-            <button onclick="handleNumber('4')" class="btn-calc key key-num h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">4</button>
-            <button onclick="handleNumber('5')" class="btn-calc key key-num h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">5</button>
-            <button onclick="handleNumber('6')" class="btn-calc key key-num h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">6</button>
-            <button onclick="handleOperator('-')" class="btn-calc key key-op h-14 rounded-2xl bg-orange-100 hover:bg-orange-200 text-orange-500 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#fbc531] active:shadow-none flex items-center justify-center">
+            <button onclick="handleNumber('4')" class="btn-calc key key-num h-11 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-lg shadow-[0_4px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">4</button>
+            <button onclick="handleNumber('5')" class="btn-calc key key-num h-11 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-lg shadow-[0_4px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">5</button>
+            <button onclick="handleNumber('6')" class="btn-calc key key-num h-11 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-lg shadow-[0_4px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">6</button>
+            <button onclick="handleOperator('-')" class="btn-calc key key-op h-11 rounded-xl bg-orange-100 hover:bg-orange-200 text-orange-500 font-fredoka font-bold text-lg shadow-[0_4px_0_0_#fbc531] active:shadow-none flex items-center justify-center">
                 -
             </button>
 
             <!-- Row 4 -->
-            <button onclick="handleNumber('1')" class="btn-calc key key-num h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">1</button>
-            <button onclick="handleNumber('2')" class="btn-calc key key-num h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">2</button>
-            <button onclick="handleNumber('3')" class="btn-calc key key-num h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">3</button>
-            <button onclick="handleOperator('+')" class="btn-calc key key-op h-14 rounded-2xl bg-orange-100 hover:bg-orange-200 text-orange-500 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#fbc531] active:shadow-none flex items-center justify-center">
+            <button onclick="handleNumber('1')" class="btn-calc key key-num h-11 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-lg shadow-[0_4px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">1</button>
+            <button onclick="handleNumber('2')" class="btn-calc key key-num h-11 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-lg shadow-[0_4px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">2</button>
+            <button onclick="handleNumber('3')" class="btn-calc key key-num h-11 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-lg shadow-[0_4px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">3</button>
+            <button onclick="handleOperator('+')" class="btn-calc key key-op h-11 rounded-xl bg-orange-100 hover:bg-orange-200 text-orange-500 font-fredoka font-bold text-lg shadow-[0_4px_0_0_#fbc531] active:shadow-none flex items-center justify-center">
                 +
             </button>
 
             <!-- Row 5 -->
-            <button onclick="handleToggleSign()" class="btn-calc key key-sign h-14 rounded-2xl bg-purple-100 hover:bg-purple-200 text-purple-600 font-fredoka font-bold text-lg shadow-[0_6px_0_0_#d8b4fe] active:shadow-none flex items-center justify-center">
+            <button onclick="handleToggleSign()" class="btn-calc key key-sign h-11 rounded-xl bg-purple-100 hover:bg-purple-200 text-purple-600 font-fredoka font-bold text-base shadow-[0_4px_0_0_#d8b4fe] active:shadow-none flex items-center justify-center">
                 ⁺/₋
             </button>
-            <button onclick="handleNumber('0')" class="btn-calc key key-num h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">0</button>
-            <button onclick="handleDecimal()" class="btn-calc key key-num h-14 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-xl shadow-[0_6px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">•</button>
-            <button onclick="handleEquals()" class="btn-calc key key-eq h-14 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white font-fredoka font-bold text-2xl shadow-[0_6px_0_0_#db2777] active:shadow-none flex items-center justify-center">
+            <button onclick="handleNumber('0')" class="btn-calc key key-num h-11 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-lg shadow-[0_4px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">0</button>
+            <button onclick="handleDecimal()" class="btn-calc key key-num h-11 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-fredoka font-bold text-lg shadow-[0_4px_0_0_#e2e8f0] active:shadow-none flex items-center justify-center">•</button>
+            <button onclick="handleEquals()" class="btn-calc key key-eq h-11 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-fredoka font-bold text-xl shadow-[0_4px_0_0_#db2777] active:shadow-none flex items-center justify-center">
                 =
             </button>
         </div>
 
         <!-- History Drawer Slide-over -->
-        <div id="history-drawer" class="absolute inset-0 bg-white/95 rounded-[34px] calc-drawer p-5 shadow-2xl transition-all duration-300 transform translate-y-full opacity-0 pointer-events-none flex flex-col z-40 backdrop-blur-md">
+        <div id="history-drawer" class="absolute inset-0 bg-white/95 rounded-[24px] calc-drawer p-3 shadow-2xl transition-all duration-300 transform translate-y-full opacity-0 pointer-events-none flex flex-col z-40 backdrop-blur-md">
             <div class="flex items-center justify-between pb-3 border-b border-pink-100">
                 <div class="flex items-center gap-2 text-pink-500 font-fredoka font-bold text-lg">
                     <i class="fa-solid fa-clock-rotate-left"></i>
@@ -404,6 +426,153 @@
         let currentThemeIndex = 0;
 
         const themes = ['kawaii', 'industrial', 'contrast'];
+
+        // ===== 索引：三層生活物品預設 =====
+        const NOTE_PRESETS = [
+            {
+                label: '飲食',
+                items: ['早餐', '午餐', '晚餐', '下午茶', '宵夜', '咖啡', '飲料', '零食', '外食', '超市食品']
+            },
+            {
+                label: '交通',
+                items: ['捷運', '公車', '火車', '高鐵', '計程車', '加油', '停車', 'Ubike', '機票', '船票']
+            },
+            {
+                label: '生活',
+                items: ['房租', '水電', '電信', '日用品', '洗衣', '理发', '醫療', '藥局', '繳費', '其他']
+            }
+        ];
+
+        function buildNoteSelectOptions(selectedValue) {
+            let html = '<option value="">— 選擇索引 —</option>';
+            html += '<option value="__custom__"' + (selectedValue === '__custom__' ? ' selected' : '') + '>✏️ 自行輸入…</option>';
+            NOTE_PRESETS.forEach(group => {
+                html += '<optgroup label="' + group.label + '">';
+                group.items.forEach(item => {
+                    const sel = (selectedValue === item) ? ' selected' : '';
+                    html += '<option value="' + item + '"' + sel + '>' + item + '</option>';
+                });
+                html += '</optgroup>';
+            });
+            return html;
+        }
+
+        function initNoteSelect() {
+            const sel = document.getElementById('note-select');
+            if (!sel) return;
+            sel.innerHTML = buildNoteSelectOptions('');
+            const custom = document.getElementById('note-custom');
+            if (custom) custom.classList.add('hidden');
+        }
+
+        function onNoteSelectChange() {
+            const sel = document.getElementById('note-select');
+            const custom = document.getElementById('note-custom');
+            if (!sel || !custom) return;
+            if (sel.value === '__custom__') {
+                custom.classList.remove('hidden');
+                custom.focus();
+            } else {
+                custom.classList.add('hidden');
+                custom.value = '';
+            }
+        }
+
+        function getNoteValue() {
+            const sel = document.getElementById('note-select');
+            const custom = document.getElementById('note-custom');
+            if (!sel) return '';
+            if (sel.value === '__custom__') {
+                return (custom ? custom.value : '').trim();
+            }
+            return (sel.value || '').trim();
+        }
+
+        function clearNoteInput() {
+            const sel = document.getElementById('note-select');
+            const custom = document.getElementById('note-custom');
+            if (sel) {
+                sel.value = '';
+            }
+            if (custom) {
+                custom.value = '';
+                custom.classList.add('hidden');
+            }
+        }
+
+        function setNoteValue(note) {
+            const sel = document.getElementById('note-select');
+            const custom = document.getElementById('note-custom');
+            if (!sel) return;
+            const n = (note || '').trim();
+            // 是否在預設清單中
+            let found = false;
+            NOTE_PRESETS.forEach(g => {
+                if (g.items.indexOf(n) !== -1) found = true;
+            });
+            if (!n) {
+                sel.innerHTML = buildNoteSelectOptions('');
+                if (custom) { custom.value = ''; custom.classList.add('hidden'); }
+            } else if (found) {
+                sel.innerHTML = buildNoteSelectOptions(n);
+                if (custom) { custom.value = ''; custom.classList.add('hidden'); }
+            } else {
+                sel.innerHTML = buildNoteSelectOptions('__custom__');
+                if (custom) {
+                    custom.value = n;
+                    custom.classList.remove('hidden');
+                }
+            }
+        }
+
+        /** 歷史 inline 編輯用的下拉 HTML */
+        function buildInlineNoteSelect(selectedNote, dataAttr) {
+            const n = (selectedNote || '').trim();
+            let found = false;
+            NOTE_PRESETS.forEach(g => {
+                if (g.items.indexOf(n) !== -1) found = true;
+            });
+            const useCustom = n && !found;
+            let html = '<select class="inline-note-select flex-1 min-w-0 rounded-lg bg-white border border-pink-200 px-1.5 py-1 text-xs font-quicksand font-semibold text-slate-700 outline-none" ' + dataAttr + ' onchange="onInlineNoteSelectChange(this)">';
+            html += '<option value="">— 無 —</option>';
+            html += '<option value="__custom__"' + (useCustom ? ' selected' : '') + '>✏️ 自行輸入…</option>';
+            NOTE_PRESETS.forEach(group => {
+                html += '<optgroup label="' + group.label + '">';
+                group.items.forEach(item => {
+                    const sel = (!useCustom && n === item) ? ' selected' : '';
+                    html += '<option value="' + item + '"' + sel + '>' + item + '</option>';
+                });
+                html += '</optgroup>';
+            });
+            html += '</select>';
+            const customVal = useCustom ? escapeHtml(n) : '';
+            const customHidden = useCustom ? '' : 'hidden';
+            html += '<input type="text" maxlength="12" class="inline-note-custom ' + customHidden + ' flex-1 min-w-0 rounded-lg bg-white border border-pink-200 px-2 py-1 text-xs font-quicksand font-semibold text-slate-700 outline-none" placeholder="自行輸入" value="' + customVal + '">';
+            return html;
+        }
+
+        function onInlineNoteSelectChange(sel) {
+            const row = sel.closest('[data-hist-idx], [data-fx-idx]');
+            if (!row) return;
+            const custom = row.querySelector('.inline-note-custom');
+            if (!custom) return;
+            if (sel.value === '__custom__') {
+                custom.classList.remove('hidden');
+                custom.focus();
+            } else {
+                custom.classList.add('hidden');
+                custom.value = '';
+            }
+        }
+
+        function readInlineNote(row) {
+            const sel = row.querySelector('.inline-note-select');
+            const custom = row.querySelector('.inline-note-custom');
+            if (!sel) return '';
+            if (sel.value === '__custom__') return (custom ? custom.value : '').trim();
+            return (sel.value || '').trim();
+        }
+
 
         // Web Audio API for cute pop sound effects
         const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -605,8 +774,10 @@
                 result = result.toString();
             }
 
-            // Save to history drawer
-            addHistoryEntry(expression, result);
+            // 方案 B：按 = 就寫入歷史，並帶上目前索引 note
+            const note = getNoteValue();
+            addHistoryEntry(expression, result, note);
+            clearNoteInput();
 
             currentInput = result;
             pendingOperator = null;
@@ -662,11 +833,24 @@
         }
 
         // History Management
-        function addHistoryEntry(expression, result) {
-            historyLogs.unshift({ expression, result });
+        function addHistoryEntry(expression, result, note = '') {
+            historyLogs.unshift({
+                expression,
+                result,
+                note: (note || '').trim()
+            });
             if (historyLogs.length > 20) historyLogs.pop();
             saveHistory();
             renderHistoryList();
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
         }
 
         function renderCalcHistory() {
@@ -677,14 +861,60 @@
             }
 
             listContainer.innerHTML = historyLogs.map((item, index) => `
-                <div onclick="useHistoryResult('${item.result}')" class="p-3 bg-pink-50/60 hover:bg-pink-100/80 rounded-2xl cursor-pointer transition flex items-center justify-between group border border-pink-100/50">
-                    <div class="text-left overflow-hidden">
-                        <div class="text-xs text-slate-400 font-quicksand font-semibold truncate">${item.expression} =</div>
-                        <div class="text-base font-fredoka font-bold text-pink-600 truncate">${formatNumber(item.result)}</div>
+                <div class="p-2.5 bg-pink-50/60 hover:bg-pink-100/80 rounded-2xl transition border border-pink-100/50 group" data-hist-idx="${index}">
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="flex-1 min-w-0 cursor-pointer" onclick="useHistoryResult(${JSON.stringify(String(item.result))})">
+                            <div class="note-display text-[12px] text-pink-500 font-fredoka font-bold mb-0.5 truncate ${item.note ? '' : 'hidden'}">📌 ${escapeHtml(item.note || '')}</div>
+                            <div class="text-xs text-slate-400 font-quicksand font-semibold truncate">${escapeHtml(item.expression)} =</div>
+                            <div class="text-base font-fredoka font-bold text-pink-600 truncate">${escapeHtml(formatNumber(item.result))}</div>
+                        </div>
+                        <div class="flex flex-col items-center gap-1 shrink-0">
+                            <button type="button" onclick="event.stopPropagation(); startEditCalcNote(${index})"
+                                    class="w-7 h-7 rounded-lg bg-white/80 text-pink-400 hover:text-pink-600 hover:bg-white flex items-center justify-center text-xs transition active:scale-90"
+                                    title="編輯索引">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                        </div>
                     </div>
-                    <i class="fa-solid fa-chevron-right text-xs text-pink-300 group-hover:translate-x-1 transition-transform"></i>
+                    <div class="note-edit hidden mt-2 flex flex-wrap items-center gap-1.5">
+                        ${buildInlineNoteSelect(item.note || '', 'data-edit-idx="' + index + '"')}
+                        <button type="button" onclick="event.stopPropagation(); saveEditCalcNote(${index})"
+                                class="shrink-0 px-2 py-1 rounded-lg bg-pink-500 text-white text-[11px] font-fredoka font-bold active:scale-90">完成</button>
+                        <button type="button" onclick="event.stopPropagation(); cancelEditCalcNote(${index})"
+                                class="shrink-0 px-2 py-1 rounded-lg bg-slate-100 text-slate-500 text-[11px] font-fredoka font-bold active:scale-90">取消</button>
+                    </div>
                 </div>
             `).join('');
+        }
+
+        function startEditCalcNote(index) {
+            const row = document.querySelector(`#history-list [data-hist-idx="${index}"]`);
+            if (!row) return;
+            row.querySelector('.note-display')?.classList.add('hidden');
+            const edit = row.querySelector('.note-edit');
+            if (edit) {
+                edit.classList.remove('hidden');
+                const custom = edit.querySelector('.inline-note-custom:not(.hidden)');
+                const sel = edit.querySelector('.inline-note-select');
+                if (custom) { custom.focus(); custom.select(); }
+                else if (sel) sel.focus();
+            }
+            playCuteSound('pop');
+        }
+
+        function saveEditCalcNote(index) {
+            const row = document.querySelector(`#history-list [data-hist-idx="${index}"]`);
+            if (!row || !historyLogs[index]) return;
+            const newNote = readInlineNote(row);
+            historyLogs[index].note = newNote;
+            saveHistory();
+            renderHistoryList();
+            showToast(newNote ? `已更新索引：${newNote}` : '已清除索引');
+            playCuteSound('pop');
+        }
+
+        function cancelEditCalcNote(index) {
+            renderHistoryList();
         }
 
         function useHistoryResult(val) {
@@ -720,8 +950,15 @@
         // Clipboard Copy
         function copyToClipboard() {
             if (currentInput === 'Error') return;
-            
-            // Create fallback copy method for iframe compatibility
+
+            // 若匯率面板開啟，改走匯率複製
+            const fxPanel = document.getElementById('fx-panel');
+            if (fxPanel && !fxPanel.classList.contains('hidden')) {
+                copyFxResult();
+                return;
+            }
+
+            // 方案 B：複製只負責剪貼簿，不寫歷史（歷史由 = 寫入）
             const el = document.createElement('textarea');
             el.value = currentInput;
             document.body.appendChild(el);
@@ -729,7 +966,7 @@
             document.execCommand('copy');
             document.body.removeChild(el);
 
-            showToast("Copied to clipboard! ✨");
+            showToast('已複製 ✨');
             playCuteSound('equals');
         }
 
@@ -895,23 +1132,28 @@
             const to = document.getElementById('fx-to').value;
             fxCopyText(fxPlain(fxLastResult));
 
-            // 計入匯率獨立歷史（與上一筆完全相同則不重複記錄）
+            // 匯率沒有「=」鍵，複製時寫入匯率歷史並帶 note
+            const note = getNoteValue();
+
             const entry = {
                 amount: parseFloat(currentInput),
                 from, to,
                 result: fxLastResult,
-                rate: fxRates[to] / fxRates[from]
+                rate: fxRates[to] / fxRates[from],
+                note: note
             };
             const last = fxHistoryLogs[0];
-            if (!last || last.amount !== entry.amount || last.from !== from || last.to !== to || last.result !== entry.result) {
+            if (!last || last.amount !== entry.amount || last.from !== from || last.to !== to || last.result !== entry.result || last.note !== entry.note) {
                 fxHistoryLogs.unshift(entry);
                 if (fxHistoryLogs.length > 20) fxHistoryLogs.pop();
                 saveHistory();
                 renderHistoryList();
             }
 
+            clearNoteInput();
+
+            showToast(note ? `已複製並加入匯率歷史：${note}` : '已複製並加入匯率歷史 ✨');
             playCuteSound('equals');
-            showToast('已複製 ✨');
         }
 
         // ===== 歷史分頁 (計算 / 匯率) =====
@@ -938,11 +1180,11 @@
                 it && typeof it.expression === 'string' && typeof it.result === 'string' &&
                 /^[\d.,\-+e×÷ ]*$/.test(it.expression) &&
                 /^(Error|-?[\d.]+(e[+-]?\d+)?)$/.test(it.result)
-            ).slice(0, 20);
+            ).map(it => ({ ...it, note: it.note || '' })).slice(0, 20);
             fxHistoryLogs = read(HIST_FX_KEY).filter(it =>
                 it && FX_CURRENCIES[it.from] && FX_CURRENCIES[it.to] &&
                 [it.amount, it.result, it.rate].every(Number.isFinite)
-            ).slice(0, 20);
+            ).map(it => ({ ...it, note: it.note || '' })).slice(0, 20);
         }
 
         function setHistoryTab(tab, silent) {
@@ -970,15 +1212,61 @@
                 return;
             }
             listContainer.innerHTML = fxHistoryLogs.map((item, i) => `
-                <div onclick="useFxHistory(${i})" class="p-3 bg-pink-50/60 hover:bg-pink-100/80 rounded-2xl cursor-pointer transition flex items-center justify-between group border border-pink-100/50">
-                    <div class="text-left overflow-hidden">
-                        <div class="text-xs text-slate-400 font-quicksand font-semibold truncate">${fxFormat(item.amount)} ${item.from} =</div>
-                        <div class="text-base font-fredoka font-bold text-pink-600 truncate">${fxFormat(item.result)} ${item.to}</div>
-                        <div class="text-[10px] text-slate-300 font-quicksand font-semibold truncate">1 ${item.from} = ${fxFormat(item.rate)} ${item.to}</div>
+                <div class="p-2.5 bg-pink-50/60 hover:bg-pink-100/80 rounded-2xl transition border border-pink-100/50 group" data-fx-idx="${i}">
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="flex-1 min-w-0 cursor-pointer" onclick="useFxHistory(${i})">
+                            <div class="note-display text-[12px] text-pink-500 font-fredoka font-bold mb-0.5 truncate ${item.note ? '' : 'hidden'}">📌 ${escapeHtml(item.note || '')}</div>
+                            <div class="text-xs text-slate-400 font-quicksand font-semibold truncate">${escapeHtml(fxFormat(item.amount))} ${escapeHtml(item.from)} =</div>
+                            <div class="text-base font-fredoka font-bold text-pink-600 truncate">${escapeHtml(fxFormat(item.result))} ${escapeHtml(item.to)}</div>
+                            <div class="text-[10px] text-slate-300 font-quicksand font-semibold truncate">1 ${escapeHtml(item.from)} = ${escapeHtml(fxFormat(item.rate))} ${escapeHtml(item.to)}</div>
+                        </div>
+                        <div class="flex flex-col items-center gap-1 shrink-0">
+                            <button type="button" onclick="event.stopPropagation(); startEditFxNote(${i})"
+                                    class="w-7 h-7 rounded-lg bg-white/80 text-pink-400 hover:text-pink-600 hover:bg-white flex items-center justify-center text-xs transition active:scale-90"
+                                    title="編輯索引">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                        </div>
                     </div>
-                    <i class="fa-solid fa-chevron-right text-xs text-pink-300 group-hover:translate-x-1 transition-transform"></i>
+                    <div class="note-edit hidden mt-2 flex flex-wrap items-center gap-1.5">
+                        ${buildInlineNoteSelect(item.note || '', 'data-fx-edit-idx="' + i + '"')}
+                        <button type="button" onclick="event.stopPropagation(); saveEditFxNote(${i})"
+                                class="shrink-0 px-2 py-1 rounded-lg bg-pink-500 text-white text-[11px] font-fredoka font-bold active:scale-90">完成</button>
+                        <button type="button" onclick="event.stopPropagation(); cancelEditFxNote(${i})"
+                                class="shrink-0 px-2 py-1 rounded-lg bg-slate-100 text-slate-500 text-[11px] font-fredoka font-bold active:scale-90">取消</button>
+                    </div>
                 </div>
             `).join('');
+        }
+
+        function startEditFxNote(index) {
+            const row = document.querySelector(`#history-list [data-fx-idx="${index}"]`);
+            if (!row) return;
+            row.querySelector('.note-display')?.classList.add('hidden');
+            const edit = row.querySelector('.note-edit');
+            if (edit) {
+                edit.classList.remove('hidden');
+                const custom = edit.querySelector('.inline-note-custom:not(.hidden)');
+                const sel = edit.querySelector('.inline-note-select');
+                if (custom) { custom.focus(); custom.select(); }
+                else if (sel) sel.focus();
+            }
+            playCuteSound('pop');
+        }
+
+        function saveEditFxNote(index) {
+            const row = document.querySelector(`#history-list [data-fx-idx="${index}"]`);
+            if (!row || !fxHistoryLogs[index]) return;
+            const newNote = readInlineNote(row);
+            fxHistoryLogs[index].note = newNote;
+            saveHistory();
+            renderHistoryList();
+            showToast(newNote ? `已更新索引：${newNote}` : '已清除索引');
+            playCuteSound('pop');
+        }
+
+        function cancelEditFxNote(index) {
+            renderHistoryList();
         }
 
         // 點選匯率記錄：還原金額與幣別並開啟匯率面板
@@ -1001,6 +1289,8 @@
 
         // Keyboard Accessibility Listener
         document.addEventListener('keydown', (e) => {
+            // 在索引輸入框打字時，不要觸發計算機快捷鍵
+            if (e.target && (e.target.id === 'note-select' || e.target.id === 'note-custom' || e.target.closest('.note-edit') || e.target.tagName === 'SELECT')) return;
             if (e.target && e.target.tagName === 'SELECT') return;
             if (e.key >= '0' && e.key <= '9') handleNumber(e.key);
             else if (e.key === '.') handleDecimal();
@@ -1019,6 +1309,7 @@
             applyTheme(fxSafeGet('mochicalc_theme'));
             initFx();
             loadHistory();
+            initNoteSelect();
             setHistoryTab('calc', true);
             updateDisplay();
         };
